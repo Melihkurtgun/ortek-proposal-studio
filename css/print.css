@@ -1,0 +1,371 @@
+/* ==========================================================================
+   Ortek Proposal Studio - PDF Baskı Stilleri (print.css v2.9)
+   ========================================================================== */
+
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    width: 210mm !important;
+    height: auto !important;
+    overflow: visible !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    font-size: 9.8pt !important;
+  }
+
+  /* Tüm Arayüz Elemanlarını ve Butonları Gizle */
+  .app-header,
+  .editor-sidebar,
+  .preview-controls-bar,
+  .modal-overlay,
+  .toast-container,
+  .a4-page-tag,
+  .no-print,
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  .app-container {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .preview-viewport {
+    padding: 0 !important;
+    margin: 0 !important;
+    background: transparent !important;
+    width: 210mm !important;
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+  }
+
+  .document-container {
+    transform: none !important;
+    gap: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    width: 210mm !important;
+  }
+
+  /* Her A4 Sayfasını Kusursuz Şekilde Ayrı Sayfa Olarak Çıkar */
+  .a4-page {
+    width: 210mm !important;
+    min-height: 297mm !important;
+    height: 297mm !important;
+    max-height: 297mm !important;
+    padding: 13mm 18mm 12mm 18mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: #ffffff !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    position: relative !important;
+  }
+
+  .a4-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Sayfa 1 Üst Düzen - logo+adres 2 satır aşağı, To 4 satır daha yukarı */
+  .page1-header-grid {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    margin-top: 30px !important;
+    margin-bottom: 105px !important;
+  }
+
+  /* Sayfa 1 Logo: büyütülmüş, 4 sütun sola, 1 satır yukarı */
+  .doc-logo-box-right {
+    width: 310px !important;
+    height: 106px !important;
+    margin-top: -15px !important; /* 1 satır yukarı taşındı */
+    margin-right: 60px !important;
+  }
+
+  /* Ortek Modunda SADECE Ortek Logosu görünür, PHS logosu KESİNLİKLE GİZLENİR */
+  .doc-logo-box-right img.ortek-main-logo,
+  .doc-logo-box-right svg {
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: contain !important;
+    object-position: right top !important;
+  }
+
+  .doc-logo-box-right .phs-logo-wrapper {
+    display: none !important;
+  }
+
+  /* PHS Modunda (phs-active) SADECE PHS + Pompa Merkezi görünür, Ortek KESİNLİKLE GİZLENİR */
+  .doc-logo-box-right.phs-active img.ortek-main-logo,
+  .doc-logo-box-right.phs-active svg {
+    display: none !important;
+  }
+
+  .doc-logo-box-right.phs-active .phs-logo-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 100% !important;
+    width: auto !important;
+  }
+
+  .phs-logo-wrapper .phs-main-logo {
+    height: 48px !important;
+    width: auto !important;
+    max-width: 160px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+
+  .phs-logo-wrapper .phs-sub-logo {
+    height: 18px !important;
+    width: auto !important;
+    max-width: 135px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    margin-top: 10px !important; /* Üstüne tam 1 satır boşluk */
+    margin-bottom: 6px !important; /* Altına satır dengesi */
+  }
+
+  .page1-meta-container {
+    gap: 75px !important;
+    margin-bottom: 0 !important;
+  }
+
+  .meta-block-grid.align-center {
+    align-items: center !important;
+  }
+
+  /* To: dan sonra gelen yazı kalın değil */
+  .meta-value {
+    font-weight: 400 !important;
+  }
+
+  /* Subject: 3 satır yukarı, Dear Sir/Mdm 1 satır yukarı */
+  .subject-block {
+    margin-top: 60px !important;
+    margin-bottom: 52px !important;
+  }
+
+  /* Name/Mobile/Email 1 satır yukarı, altındaki şirket yazısı 3 satır aşağı indirildi */
+  .signer-company-block {
+    margin-top: 75px !important;
+  }
+
+  /* Sayfa 2 Logo: daha büyük ve daha yukarı */
+  .page2-logo-box {
+    width: 300px !important;
+    height: 100px !important;
+    margin-top: -25px !important;
+  }
+
+  .page2-phs-wrapper {
+    align-items: flex-start !important;
+    justify-content: center !important;
+  }
+
+  .page2-phs-wrapper .phs-main-logo {
+    height: 44px !important;
+    max-width: 150px !important;
+    object-position: left center !important;
+  }
+
+  .page2-phs-wrapper .phs-sub-logo {
+    height: 16px !important;
+    max-width: 125px !important;
+    margin-top: 8px !important;
+    margin-bottom: 4px !important;
+    object-position: left center !important;
+  }
+
+  /* Tipografi & Renk Koruması */
+  .subject-label {
+    color: #0b3b60 !important;
+  }
+
+  .subject-text {
+    color: #0b3b60 !important;
+    font-weight: 500 !important;
+  }
+
+  .doc-title-quotation {
+    color: #006699 !important;
+  }
+
+  .product-title-bold {
+    color: #006699 !important;
+    font-weight: 700 !important;
+    font-size: 10.5pt !important;
+  }
+
+  /* Tablo başlıkları tek satırda */
+  .quotation-table th {
+    background-color: #f1f3f5 !important;
+    -webkit-print-color-adjust: exact !important;
+    white-space: nowrap !important;
+  }
+
+  .quotation-table th.col-desc { width: 50% !important; }
+  .quotation-table th.col-price { width: 17.5% !important; }
+  .quotation-table th.col-total { width: 17.5% !important; }
+
+  .quotation-table tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .quotation-table th,
+  .quotation-table td {
+    border: 1px solid #000000 !important;
+    padding: 4.5px 7px !important;
+  }
+
+  .product-specs-wrapper,
+  .spec-line {
+    color: #0084b4 !important;
+  }
+
+  /* Marka etiketi #006699, değer siyah */
+  .spec-line.spec-brand {
+    color: #006699 !important;
+    font-weight: 400 !important;
+  }
+
+  .spec-line.spec-brand .spec-value {
+    color: #222 !important;
+    font-weight: 400 !important;
+  }
+
+  /* Grand Total kutucuk içinde, aynı font ve renk */
+  .quotation-table td.grand-total-empty,
+  .grand-total-row td.grand-total-empty,
+  .grand-total-empty {
+    border: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+  }
+
+  .grand-total-label {
+    text-align: right !important;
+    font-weight: 700 !important;
+    font-size: 10pt !important;
+    color: #111 !important;
+    border: 1px solid #000 !important;
+    background-color: #f1f3f5 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  .grand-total-amount {
+    text-align: right !important;
+    font-weight: 700 !important;
+    font-size: 10pt !important;
+    color: #111 !important;
+    border: 1px solid #000 !important;
+    background-color: #f1f3f5 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  
+  /* %20 KDV ve 20% VAT Yazdırma Vurgusu */
+  .highlight-vat {
+    font-weight: 800 !important;
+    font-size: 1.08em !important;
+    font-style: normal !important;
+    text-decoration: underline !important;
+    text-decoration-thickness: 1.5px !important;
+    text-underline-offset: 2.5px !important;
+    color: #003366 !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  /* Remarks */
+  .remarks-section {
+    margin-top: 6px !important;
+    margin-bottom: 6px !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .remarks-header {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    color: #006699 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .remarks-list {
+    margin: 0 !important;
+    padding-left: 16px !important;
+  }
+
+  .remarks-list li {
+    color: #235a92 !important;
+    font-size: 7.2pt !important;
+    line-height: 1.25 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .remarks-list li strong {
+    color: #006699 !important; /* Remarks başlığı ile aynı renk */
+  }
+
+  /* Sayfa 2 Kapanış (Remarks'ın altında, ASLA sayfada bölünemez!) */
+  .page2-signoff {
+    margin-top: 18px !important;
+    margin-bottom: 4mm !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    display: block !important;
+  }
+
+  .page2-signoff .closing-text,
+  .page2-signoff .company-title,
+  .page2-signoff .person-role {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  .page2-signoff .closing-text {
+    font-style: italic !important;
+    margin-bottom: 4px !important;
+    font-size: 8.8pt !important;
+  }
+
+  .page2-signoff .company-title {
+    font-weight: 700 !important;
+    margin-bottom: 2px !important;
+    font-size: 8.8pt !important;
+  }
+
+  .page2-signoff .person-role {
+    font-weight: 600 !important;
+    color: #111 !important;
+    font-size: 8.8pt !important;
+  }
+}

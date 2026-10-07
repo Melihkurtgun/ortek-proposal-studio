@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1600" viewBox="0 0 1600 1600" role="img" aria-labelledby="title"><title id="title">Melih Kurtgün Teklif Takip — seçenek 4</title>
+  <defs><linearGradient id="b" x1="260" y1="255" x2="1360" y2="1360" gradientUnits="userSpaceOnUse"><stop stop-color="#123A40"/><stop offset="1" stop-color="#071D2B"/></linearGradient><linearGradient id="l" x1="500" y1="370" x2="1120" y2="1210" gradientUnits="userSpaceOnUse"><stop stop-color="#D6FA6A"/><stop offset="1" stop-color="#67D7AE"/></linearGradient></defs>
+  <rect x="100" y="100" width="1400" height="1400" rx="310" fill="url(#b)"/>
+  <path d="M393 1147V454c0-55 44-99 99-99h233c35 0 67 19 84 49l61 109 61-109c17-30 49-49 84-49h93c55 0 99 44 99 99v693" fill="none" stroke="url(#l)" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="m1078 831 95 95 172-207" fill="none" stroke="#FFF" stroke-width="65" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M482 1235h636" stroke="#A9EFD5" stroke-width="38" stroke-linecap="round" opacity=".72"/>
+  <circle cx="1300" cy="1150" r="56" fill="#D6FA6A"/>
+</svg>

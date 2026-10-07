@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 400" width="100%" height="100%">
+  <defs>
+    <!-- Water Drop Gradient -->
+    <linearGradient id="mainDropGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#40c4ff" />
+      <stop offset="35%" stop-color="#00b0ff" />
+      <stop offset="70%" stop-color="#0091ea" />
+      <stop offset="100%" stop-color="#0277bd" />
+    </linearGradient>
+
+    <!-- Green Leaf Gradient -->
+    <linearGradient id="leafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#689f38" />
+      <stop offset="30%" stop-color="#7cb342" />
+      <stop offset="70%" stop-color="#8bc34a" />
+      <stop offset="100%" stop-color="#9ccc65" />
+    </linearGradient>
+
+    <!-- Small Droplets Gradient -->
+    <radialGradient id="smallDrop" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#e1f5fe" />
+      <stop offset="40%" stop-color="#29b6f6" />
+      <stop offset="90%" stop-color="#0288d1" />
+      <stop offset="100%" stop-color="#01579b" />
+    </radialGradient>
+
+    <!-- Drop Highlight Shadow -->
+    <filter id="softGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- ==================== LEFT ICON: LEAF & DROPLETS ==================== -->
+  <g transform="translate(10, 10)">
+    
+    <!-- 1. The Green Leaf -->
+    <path d="M 60,340 C 35,260 45,185 110,140 C 180,185 245,155 315,130 C 290,215 250,290 145,300 C 105,305 75,335 60,340 Z"
+          fill="url(#leafGrad)" />
+
+    <!-- Leaf Vein (White Center Stem & Ribs) -->
+    <path d="M 60,340 Q 115,245 220,175" 
+          fill="none" stroke="#ffffff" stroke-width="4.5" stroke-linecap="round" opacity="0.9" />
+    <path d="M 125,240 Q 160,210 190,215" 
+          fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    <path d="M 85,280 Q 120,265 140,270" 
+          fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+    <path d="M 165,200 Q 200,170 230,172" 
+          fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.8" />
+
+    <!-- 2. Large Water Droplet Rising from Top Center of Leaf -->
+    <!-- Droplet Shadow / Back -->
+    <path d="M 145,12 C 145,12 88,105 88,145 C 88,178 114,198 145,198 C 176,198 202,178 202,145 C 202,105 145,12 145,12 Z"
+          fill="url(#mainDropGrad)" filter="url(#softGlow)" />
+
+    <!-- Droplet Realistic Top-Left Specular Highlight -->
+    <path d="M 142,28 C 142,28 108,100 108,135 C 108,155 120,170 138,172 C 122,168 116,145 118,125 C 122,92 142,28 142,28 Z"
+          fill="#ffffff" opacity="0.75" />
+
+    <!-- Droplet Secondary Curved Bottom Glow -->
+    <path d="M 130,188 C 152,192 178,185 190,165 C 182,180 158,188 130,188 Z"
+          fill="#ffffff" opacity="0.4" />
+
+    <!-- 3. Small Water Droplets on Leaf Surface -->
+    <!-- Droplet 1 (Large on leaf) -->
+    <ellipse cx="120" cy="245" rx="19" ry="15" transform="rotate(-20 120 245)" fill="url(#smallDrop)" />
+    <ellipse cx="115" cy="240" rx="6" ry="4" transform="rotate(-20 115 240)" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 2 -->
+    <ellipse cx="78" cy="242" rx="13" ry="11" transform="rotate(-15 78 242)" fill="url(#smallDrop)" />
+    <ellipse cx="74" cy="239" rx="4" ry="3" transform="rotate(-15 74 239)" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 3 -->
+    <ellipse cx="98" cy="278" rx="15" ry="12" transform="rotate(-25 98 278)" fill="url(#smallDrop)" />
+    <ellipse cx="94" cy="274" rx="5" ry="3" transform="rotate(-25 94 274)" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 4 -->
+    <ellipse cx="148" cy="240" rx="14" ry="11" transform="rotate(-10 148 240)" fill="url(#smallDrop)" />
+    <ellipse cx="144" cy="237" rx="4" ry="3" transform="rotate(-10 144 237)" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 5 -->
+    <ellipse cx="168" cy="258" rx="10" ry="8" transform="rotate(-15 168 258)" fill="url(#smallDrop)" />
+    <ellipse cx="165" cy="256" rx="3" ry="2" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 6 -->
+    <ellipse cx="128" cy="215" rx="10" ry="8" transform="rotate(-30 128 215)" fill="url(#smallDrop)" />
+    <ellipse cx="125" cy="213" rx="3" ry="2" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 7 -->
+    <ellipse cx="145" cy="205" rx="8" ry="6" fill="url(#smallDrop)" />
+    <ellipse cx="143" cy="203" rx="2.5" ry="1.8" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 8 -->
+    <ellipse cx="180" cy="225" rx="9" ry="7" fill="url(#smallDrop)" />
+    <ellipse cx="178" cy="223" rx="2.5" ry="2" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 9 -->
+    <ellipse cx="198" cy="250" rx="10" ry="8" fill="url(#smallDrop)" />
+    <ellipse cx="195" cy="248" rx="3" ry="2" fill="#ffffff" opacity="0.8" />
+
+    <!-- Droplet 10 -->
+    <ellipse cx="108" cy="218" rx="8" ry="6" fill="url(#smallDrop)" />
+    <ellipse cx="106" cy="216" rx="2" ry="1.5" fill="#ffffff" opacity="0.8" />
+  </g>
+
+  <!-- ==================== RIGHT TYPOGRAPHY: ORTEK ==================== -->
+  <g transform="translate(235, 125)">
+    <!-- Big Outline Circular "O" -->
+    <circle cx="72" cy="135" r="62" fill="none" stroke="#00aae7" stroke-width="17" />
+
+    <!-- "rtek" letters in modern geometric sans-serif -->
+    <text x="145" y="190" 
+          font-family="'Century Gothic', 'Montserrat', 'Segoe UI', 'Ubuntu', sans-serif" 
+          font-size="168" 
+          font-weight="400" 
+          fill="#00aae7" 
+          letter-spacing="-4">
+      rtek
+    </text>
+
+    <!-- Subtitle: "Akışkan ve Pompa Teknolojileri" -->
+    <text x="0" y="248" 
+          font-family="'Century Gothic', 'Montserrat', 'Segoe UI', sans-serif" 
+          font-size="34" 
+          font-weight="700" 
+          fill="#00aae7" 
+          letter-spacing="0.2">
+      Akışkan ve Pompa Teknolojileri
+    </text>
+  </g>
+</svg>

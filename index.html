@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ortek Proposal Studio | Premium Teklif Yönetim Sistemi</title>
+  
+  <!-- CSS Dosyaları -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/print.css" media="print">
+  
+  <!-- Favicon / SVG -->
+  <link rel="icon" type="image/png" href="icon.png">
+</head>
+<body>
+  <div id='splash-screen' style='position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #1e1e20; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: opacity 0.8s ease;'>
+    <div style='display: flex; align-items: center; justify-content: center; gap: 35px; margin-bottom: 25px; animation: splashPulse 2s infinite ease-in-out;'>
+      <img src='assets/ortek-logo.png' alt='Ortek Logo' style='height: 55px; max-width: 220px; object-fit: contain;'>
+      <div style='height: 45px; width: 2px; background: rgba(255,255,255,0.25);'></div>
+      <img src='assets/PHS Logo.png' alt='PHS Logo' style='height: 55px; max-width: 220px; object-fit: contain;'>
+    </div>
+    <div style='color: #a0a0a5; font-size: 1.1rem; font-weight: 600; font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; letter-spacing: 3px;'>PROPOSAL STUDIO</div>
+    <div style='margin-top: 25px; width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top: 3px solid #007bff; border-radius: 50%; animation: splashSpin 1s linear infinite;'></div>
+  </div>
+  <style>
+    @keyframes splashSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    @keyframes splashPulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.03); opacity: 0.85; } 100% { transform: scale(1); opacity: 1; } }
+  </style>
+
+
+  <!-- ==========================================================================
+       Üst Araç Çubuğu (App Header)
+       ========================================================================== -->
+  <header class="app-header no-print">
+    <div class="brand-section">
+      <div class="hacker-badge online-indicator-dot" title="Sistem Aktif & Çevrimiçi">
+        <span class="dot"></span>
+      </div>
+      
+      <!-- Bildirim ve Mesajlaşma Alanı -->
+      <div class="notification-wrapper" style="position: relative; display: flex; align-items: center; gap: 6px;">
+        <button type="button" id="btn-notifications-bell" class="btn-notification-bell" title="Bildirimler">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span id="notif-badge" class="notif-badge" style="display: none;">0</span>
+        </button>
+
+        <!-- Ekip İçi Canlı Mesajlaşma Butonu -->
+        <button type="button" id="btn-team-chat-open" class="btn-team-chat" title="Ekip İçi Canlı Mesajlaşma (Sohbet)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+          <span id="chat-total-badge" class="notif-badge" style="display: none; background: #00d2ff; box-shadow: 0 0 8px rgba(0, 210, 255, 0.8);">0</span>
+        </button>
+
+        <!-- Açılır Bildirim Paneli (Windows / Modern SaaS Style) -->
+        <div id="notifications-dropdown" class="notifications-dropdown" style="display: none;">
+          <div class="notif-header">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--accent-cyan)" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              <span style="font-weight: 700; font-size: 0.95rem; color: #fff;">Bildirimler</span>
+            </div>
+            <button type="button" id="btn-clear-all-notifs" class="btn-clear-notifs">Tümünü Okundu İşaretle</button>
+          </div>
+          <div id="notif-items-list" class="notif-items-list">
+            <!-- Bildirimler burada dinamik listelenecek -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <!-- Firma ve Dil Seçimi -->
+      <div style="display: flex; align-items: center; gap: 0.65rem; margin-right: 0.5rem;">
+        <!-- Firma Seçimi (ORTEK / PHS) -->
+        <div style="display: flex; align-items: center; gap: 0.6rem; background: #fff; padding: 0.35rem 0.8rem; border-radius: 8px; border: 1px solid var(--border-color);">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">FİRMA:</span>
+          <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer; margin: 0;">
+            <input type="radio" name="activeCompany" value="ortek" checked> 
+            <span style="font-weight: 700; color: #006699; font-size: 0.82rem;">ORTEK</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer; margin: 0;">
+            <input type="radio" name="activeCompany" value="phs"> 
+            <span style="font-weight: 700; color: #111; font-size: 0.82rem;">PHS</span>
+          </label>
+        </div>
+
+        <!-- Dil Seçimi (TR / EN - Varsayılan TR) -->
+        <div style="display: flex; align-items: center; gap: 0.6rem; background: #fff; padding: 0.35rem 0.8rem; border-radius: 8px; border: 1px solid var(--border-color);">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700;">DİL:</span>
+          <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer; margin: 0;">
+            <input type="radio" name="activeLanguage" value="tr" checked> 
+            <span style="font-weight: 700; color: #c0392b; font-size: 0.82rem;">TR</span>
+          </label>
+          <label style="display: flex; align-items: center; gap: 0.25rem; cursor: pointer; margin: 0;">
+            <input type="radio" name="activeLanguage" value="en"> 
+            <span style="font-weight: 700; color: #2980b9; font-size: 0.82rem;">EN</span>
+          </label>
+        </div>
+      </div>
+      <!-- Yeni Teklif Başlat Butonu -->
+      <button type="button" class="btn btn-dark" id="btn-new-quote" title="Sayacı 1 artırıp müşteri ve ürün alanları temizlenmiş yeni teklif başlatır">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Yeni Teklif</span>
+      </button>
+
+      <!-- Hızlı Revizyon Butonu -->
+      <button type="button" class="btn btn-warning" id="btn-quick-rev" title="Mevcut teklife revizyon numarası ekler (+R1, +R2)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        <span>Revizyon Ekle</span>
+      </button>
+
+      <!-- Kayıtlı Teklifler Geçmişi -->
+      <button type="button" class="btn btn-dark" id="btn-history-open" title="Daha önce kaydedilen teklifleri görüntüle">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        <span>Geçmiş</span>
+      </button>
+
+      <!-- CRM & Analiz -->
+      <button type="button" class="btn btn-dark" id="btn-crm-open" title="Teklif durum analizleri ve CRM ekranını açar" style="border: 1px solid var(--accent-emerald);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <span>Analiz ve Takip</span>
+      </button>
+
+      <!-- Profil ve Kullanıcı Değiştir -->
+      <button type="button" class="btn btn-dark" id="btn-profile-open" title="Aktif kullanıcı oturumu ve profil ayarları" style="display: flex; align-items: center; gap: 6px;">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span id="header-user-name">Melih Kurtgün</span>
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+
+      <!-- PDF Olarak Kaydet / Yazdır (Ana Buton) -->
+      <button type="button" class="btn btn-success" id="btn-print" title="A4 formatında mükemmel PDF çıktısı alın (Ctrl+P)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        <span>PDF İndir / Yazdır</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Ana Ekran Geçerlilik Hatırlatma Uyarısı (Collapsible Alert Banner) -->
+  <div id="expiry-reminder-banner" class="expiry-reminder-banner no-print" style="display: none;">
+    <div class="expiry-banner-content">
+      <div class="expiry-banner-left">
+        <span class="expiry-banner-icon">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </span>
+        <div class="expiry-banner-text">
+          <strong id="expiry-banner-count">0 Teklifinizin</strong> geçerlilik süresi doldu! Müşteri ile iletişime geçilmesi gerekiyor.
+        </div>
+      </div>
+      <div class="expiry-banner-actions">
+        <button type="button" class="btn-outline-amber" id="btn-banner-open-notifs">
+          Hatırlatmaları İncele
+        </button>
+        <button type="button" class="btn-banner-close" id="btn-banner-close" title="Kapat">&times;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       Ana Çalışma Alanı: Sol Form & Sağ Canlı Önizleme
+       ========================================================================== -->
+  <main class="app-container">
+
+    <!-- SOL PANEL: Form Kontrolleri -->
+    <aside class="editor-sidebar no-print">
+      <div class="sidebar-scroll">
+
+        <!-- 1. KART: Teklif & Referans Bilgileri -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              1. Teklif & Referanslar
+            </span>
+          </div>
+
+          <div class="form-grid">
+            <!-- Tarih (Otomatik bugünün tarihi) -->
+            <div class="form-group">
+              <label class="form-label" for="input-date">Tarih (Date):</label>
+              <input type="date" id="input-date" class="form-control">
+            </div>
+
+            <!-- Quotation Ref (Otomatik ORT-UNI + Tarih) -->
+            <div class="form-group">
+              <label class="form-label" for="input-quotation-ref">
+                Quotation Ref:
+                <small id="ref-auto-badge">Otomatik</small>
+              </label>
+              <input type="text" id="input-quotation-ref" class="form-control" placeholder="ORT-UNI08072026">
+            </div>
+
+            <!-- Sales Force Ref No (Yıl + Sayaç) -->
+            <div class="form-group col-span-2">
+              <label class="form-label" for="input-sf-ref">
+                Sales Force Ref No (Teklif No):
+                <small id="sf-counter-badge">Teklif #1</small>
+              </label>
+              <input type="text" id="input-sf-ref" class="form-control" placeholder="202600001">
+            </div>
+          </div>
+
+          <!-- Revizyon Kutucuğu ve Paneli -->
+          <div class="toggle-switch-wrapper" id="toggle-revision-wrapper" style="margin-top: 0.5rem;">
+            <label class="toggle-label" for="checkbox-revision">
+              <input type="checkbox" id="checkbox-revision" class="custom-checkbox">
+              <span>Bu Teklifi Revize Et (Revizyon Modu)</span>
+            </label>
+          </div>
+
+          <div id="revision-panel" class="revision-control-panel" style="display: none;">
+            <div class="revision-badge-display">
+              <span style="font-size: 0.8rem; color: var(--text-muted);">Aktif Revizyon:</span>
+              <span class="rev-pill" id="rev-pill-display">R1</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button type="button" class="btn btn-sm btn-warning" id="btn-inc-rev" style="flex: 1;">+ Revizyon Artır (R1 &rarr; R2)</button>
+              <button type="button" class="btn btn-sm btn-dark" id="btn-dec-rev">- Azalt</button>
+            </div>
+            <small style="color: var(--accent-amber); font-size: 0.73rem;">
+              * Revizyon yapıldığında Sales Force Ref No sonuna R1, R2 eklenir (Örn: 202600015R1).
+            </small>
+          </div>
+
+          <!-- Internal Ref No (Dahili Referans Kutucuğu) -->
+          <div class="toggle-switch-wrapper" id="toggle-internal-ref-wrapper" style="margin-top: 0.75rem;">
+            <label class="toggle-label" for="checkbox-internal-ref">
+              <input type="checkbox" id="checkbox-internal-ref" class="custom-checkbox">
+              <span>Dahili Ref No Ekle (Internal Ref No)</span>
+            </label>
+          </div>
+
+          <div id="internal-ref-group" class="form-group" style="display: none; margin-top: 0.65rem;">
+            <label class="form-label" for="input-internal-ref">Internal Ref No:</label>
+            <input type="text" id="input-internal-ref" class="form-control" placeholder="Örn: INT-2026-088">
+          </div>
+        </section>
+
+        <!-- 2. KART: Müşteri & Muhatap Bilgileri (Temiz Placeholder'lı) -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              2. Müşteri & Teklif Detayı
+            </span>
+          </div>
+
+          <!-- To (Firma Adı) & Cari Rehberi Butonu -->
+          <div class="form-group" style="position: relative;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+              <label class="form-label" for="input-to" style="margin-bottom: 0;">To: (Kime / Firma Adı)</label>
+              <button type="button" id="btn-open-customers-modal" class="btn btn-outline" style="font-size: 0.72rem; padding: 2px 9px; height: auto; border-color: var(--accent-cyan); color: var(--accent-cyan); display: inline-flex; align-items: center; gap: 4px; border-radius: 4px; background: rgba(0, 229, 255, 0.08); cursor: pointer;" title="Kayıtlı cari ve müşteri listesini görüntüle / seç">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>Cari Rehberi</span>
+              </button>
+            </div>
+            <div style="position: relative;">
+              <input type="text" id="input-to" class="form-control" placeholder="Örn: ISKELE SHIPPING TRADING LTD.STI." autocomplete="off">
+              <!-- Akıllı Cari Tamamlama Listesi (Autocomplete) -->
+              <div id="customer-autocomplete-dropdown" class="customer-autocomplete-dropdown" style="display: none;"></div>
+            </div>
+          </div>
+          
+          <div class="form-grid">
+            <!-- Son Kullanıcı -->
+            <div class="form-group">
+              <label class="form-label" for="input-enduser" style="color:var(--accent-emerald)">Son Kullanıcı:</label>
+              <input type="text" id="input-enduser" class="form-control" placeholder="Örn: Aselsan">
+              <div style="margin-top: 5px; display: flex; align-items: center; gap: 5px; font-size: 0.85rem;">
+                <input type="checkbox" id="chk-enduser-self">
+                <label for="chk-enduser-self" style="cursor: pointer; margin: 0;">Son Kullanıcı Kendisi (Firma Adını Kopyala)</label>
+              </div>
+            </div>
+
+            <!-- Sektör -->
+            <div class="form-group">
+              <label class="form-label" for="input-industry" style="color:var(--accent-emerald)">Sektör:</label>
+              <input type="text" id="input-industry" class="form-control" placeholder="Örn: Savunma Sanayi" list="industry-list">
+              <datalist id="industry-list">
+                <option value="İnşaat Sektörü">
+                <option value="Su ve Atıksu Arıtma">
+                <option value="Gıda ve İçecek">
+                <option value="Kimya Sanayi">
+                <option value="İlaç Sanayi">
+                <option value="Maden ve Metalurji">
+                <option value="Kağıt ve Selüloz">
+                <option value="Savunma Sanayi">
+                <option value="Enerji">
+                <option value="Otomotiv">
+                <option value="Tekstil">
+              </datalist>
+            </div>
+          </div>
+
+          <!-- Address (Adres) -->
+          <div class="form-group">
+            <label class="form-label" for="input-address">Address: (Adres)</label>
+            <textarea id="input-address" class="form-control" rows="2" placeholder="Örn: Cumhuriyet mah. Tercan sok. No:16/A Kartal/İST"></textarea>
+          </div>
+
+          <!-- Vergi Dairesi & Vergi No / VKN -->
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="input-tax-office" style="color: var(--accent-cyan);">Vergi Dairesi:</label>
+              <input type="text" id="input-tax-office" class="form-control" placeholder="Örn: Kartal Vergi Dairesi">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="input-tax-number" style="color: var(--accent-cyan);">Vergi No / VKN:</label>
+              <input type="text" id="input-tax-number" class="form-control" placeholder="Örn: 6440552145">
+            </div>
+          </div>
+
+          <!-- Attention (İlgili Kişi - Sayfa 2 From'a Otomatik Aktarılır) -->
+          <div class="form-group">
+            <label class="form-label" for="input-attention">
+              Attention: (İlgili Kişi)
+              <small style="color: var(--accent-emerald);">Sayfa 2 From'a Otomatik Yazılır</small>
+            </label>
+            <input type="text" id="input-attention" class="form-control" placeholder="Örn: Hakan Tuncan">
+          </div>
+
+          <div class="form-grid">
+            <!-- Telefon -->
+            <div class="form-group">
+              <label class="form-label" for="input-tel">Telefon:</label>
+              <input type="text" id="input-tel" class="form-control" placeholder="Örn: 0533 499 5162">
+            </div>
+
+            <!-- E-Posta -->
+            <div class="form-group">
+              <label class="form-label" for="input-email">E-Posta:</label>
+              <input type="email" id="input-email" class="form-control" placeholder="Örn: hakantuncan@tekkonotomasyon.com.tr">
+            </div>
+          </div>
+
+          <!-- Subject (Konu) -->
+          <div class="form-group" style="margin-top: 0.35rem;">
+            <label class="form-label" for="input-subject">Subject: (Teklif Konusu)</label>
+            <input type="text" id="input-subject" class="form-control" placeholder="Örn: DSI 6. BOLGE IHALE">
+          </div>
+
+          <!-- Müşteriyi Cari Rehberine Kaydet / Güncelle Hızlı Butonu -->
+          <div style="margin-top: 0.6rem; display: flex; justify-content: flex-end;">
+            <button type="button" id="btn-save-customer-to-directory" class="btn btn-outline" style="font-size: 0.74rem; padding: 5px 12px; border-color: rgba(0, 229, 255, 0.4); color: var(--accent-cyan); display: inline-flex; align-items: center; gap: 6px; border-radius: 5px; background: rgba(0, 229, 255, 0.06); cursor: pointer;" title="Bu müşterinin vergi dairesi, VKN ve iletişim bilgilerini Cari Rehberine kaydeder veya günceller">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              <span>Müşteriyi Cari Rehberine Kaydet / Güncelle</span>
+            </button>
+          </div>
+        </section>
+
+
+        <!-- 3. KART: Hazırlayan & İmza Bilgileri (Hafızada Tutulur) -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              3. Hazırlayan & İletişim (Hafıza)
+            </span>
+            <small style="color: var(--accent-emerald); font-size: 0.72rem;">Otomatik Kaydedilir</small>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label" for="sidebar-prep-name">Hazırlayan (Name):</label>
+              <input type="text" id="sidebar-prep-name" class="form-control" value="Melih Kurtgün">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sidebar-prep-role">Unvan / Rol:</label>
+              <input type="text" id="sidebar-prep-role" class="form-control" value="Makine Mühendisi">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sidebar-prep-mobile">Mobile:</label>
+              <input type="text" id="sidebar-prep-mobile" class="form-control" value="+90 543 956 85 11">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="sidebar-prep-email">Email:</label>
+              <input type="email" id="sidebar-prep-email" class="form-control" value="melih.kurtgun@ortek.com.tr">
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. KART: Teklif Kalemleri (Sayfa 2 Ürün Tablosu + Dinamik Ekstra Özellikler - Şeffaf Placeholder'lı) -->
+        <section class="panel-card">
+          <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <span class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+              4. Teklif Kalemleri (Sayfa 2)
+            </span>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <button type="button" class="btn" id="btn-template-sondaj" title="8 kalemlik standart Sondaj Teklifi ürün başlıklarını otomatik yükler" style="background: linear-gradient(135deg, #0077b6, #0096c7); color: #ffffff; font-size: 0.74rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 2px 5px rgba(0,0,0,0.25); cursor: pointer; transition: all 0.2s ease;">
+                <img src="assets/sondaj-well.svg" width="16" height="16" style="border-radius: 3px; display: inline-block; vertical-align: middle;" alt="">
+                <span>Sondaj Teklifi</span>
+              </button>
+              <select id="select-currency" class="form-control" style="padding: 0.25rem 0.55rem; font-size: 0.78rem; width: auto; font-weight: 600;">
+                <option value="EUR">Euro (EUR €)</option>
+                <option value="USD">USD ($)</option>
+                <option value="TL">Türk Lirası (TL ₺)</option>
+              </select>
+              <button type="button" class="btn btn-dark" id="btn-open-brand-discounts" title="Marka Alış İskonto Oranlarını Görüntüle ve Güncelle" style="padding: 4px 10px; font-size: 0.74rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                <span>İskonto Oranları</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Proje Özel Fiyat Kutusu (Açılır / Kapanır, Sondaj ile Uyumlu Taslak) -->
+          <div class="package-price-box" id="package-price-box">
+            <div class="package-price-header" id="package-price-header-toggle" title="Detayları Açmak veya Kapatmak İçin Tıklayın">
+              <div class="package-header-left">
+                <input type="checkbox" id="check-package-price" class="custom-checkbox">
+                <label for="check-package-price" class="package-checkbox-label">
+                  <span class="package-icon-badge">🏷️</span>
+                  <span class="package-title-text">Proje Özel Fiyat Uygula (Tek Toplam Fiyat)</span>
+                </label>
+              </div>
+              <div class="package-header-right">
+                <span class="package-live-pill" id="package-live-pill" style="display: none;">0,00 EUR</span>
+                <button type="button" class="btn-package-accordion" id="btn-package-accordion" title="Detayları Aç / Kapat">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Açılır / Kapanır Detay Alanı (Tam Orantılı 2x2 Grid) -->
+            <div id="package-price-details" class="package-price-details" style="display: none;">
+              <div class="package-details-grid">
+                <div class="form-group package-form-group">
+                  <label class="form-label package-label">Proje Fiyatı (KDV Hariç):</label>
+                  <div class="package-price-input-wrapper">
+                    <input type="number" step="0.01" min="0" id="input-package-price" class="form-control package-input-bold" placeholder="Örn: 100000.00">
+                    <span id="package-currency-label" class="package-currency-addon">EUR</span>
+                  </div>
+                </div>
+                <div class="form-group package-form-group">
+                  <label class="form-label package-label">Kalemlerdeki Fiyat Metni:</label>
+                  <input type="text" id="input-package-row-text" class="form-control package-input" placeholder="Örn: Proje Özel Fiyat" value="Proje Özel Fiyat">
+                </div>
+                <div class="form-group package-form-group">
+                  <label class="form-label package-label">Tablo Toplam Satırı Başlığı:</label>
+                  <input type="text" id="input-package-total-text" class="form-control package-input" placeholder="Örn: Proje Özel Fiyat" value="Proje Özel Fiyat">
+                </div>
+                <div class="form-group package-form-group">
+                  <label class="form-label package-label">KDV Dahil Toplam (Önizleme):</label>
+                  <input type="text" id="preview-package-grand-total" class="form-control package-input-preview" value="0,00 EUR" readonly>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kalemler Listesi Konteyneri -->
+          <div id="items-container" class="items-list">
+            <!-- Dinamik Olarak JavaScript ile doldurulur -->
+          </div>
+
+          <!-- Kalem Ekleme Butonu -->
+          <button type="button" class="btn btn-dark" id="btn-add-item" style="width: 100%; justify-content: center; margin-bottom: 0.85rem;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Yeni Kalem / Pompa Ekle</span>
+          </button>
+
+          <!-- Hızlı Hesaplama Özeti -->
+          <div class="summary-box">
+            <div class="summary-row">
+              <span>Ara Toplam:</span>
+              <span id="summary-subtotal">0,00 EUR</span>
+            </div>
+            <div class="summary-row">
+              <span>KDV (%20):</span>
+              <span id="summary-vat">0,00 EUR</span>
+            </div>
+            <div class="summary-row total">
+              <span>Genel Toplam (KDV Dahil):</span>
+              <span id="summary-grandtotal">0,00 EUR</span>
+            </div>
+            <!-- Efektif Satış Kur Hesaplama & Döviz Çevirici Butonu -->
+            <button type="button" class="btn btn-currency-calc" id="btn-open-currency-calc" title="Güncel döviz satış kurlarını çekip Euro, Dolar ve TL dönüşümlerini canlı hesaplar">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span id="btn-currency-calc-label">Kur Hesapla (TCMB)</span>
+              <span class="badge-live-pulse" id="btn-currency-calc-pulse" title="Canlı Satış Kurları"></span>
+            </button>
+          </div>
+        </section>
+
+        <!-- 5. KART: Şartlar ve Koşullar (Remarks Kontrolleri - Şeffaf Placeholder'lı) -->
+        <section class="panel-card">
+          <div class="panel-header">
+            <span class="panel-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+              5. Şartlar & Koşullar (Remarks)
+            </span>
+          </div>
+
+          <div class="form-grid">
+            <!-- Teslim Yeri -->
+            <div class="form-group">
+              <label class="form-label" for="input-remark-delivery-place">Teslim Yeri:</label>
+              <input type="text" id="input-remark-delivery-place" class="form-control" placeholder="Örn: Depo Teslim">
+            </div>
+
+            <!-- Teslim Süresi -->
+            <div class="form-group">
+              <label class="form-label" for="input-remark-delivery-time">Teslim Süresi:</label>
+              <input type="text" id="input-remark-delivery-time" class="form-control" placeholder="Örn: Stok teslim.">
+            </div>
+
+            <!-- Geçerlilik (Gün) -->
+            <div class="form-group">
+              <label class="form-label" for="input-remark-validity-days">Geçerlilik Süresi (Gün):</label>
+              <input type="number" id="input-remark-validity-days" class="form-control" min="1" placeholder="Örn: 5">
+            </div>
+
+            <!-- Ödeme Şekli -->
+            <div class="form-group">
+              <label class="form-label" for="input-remark-payment">Ödeme Şekli:</label>
+              <input type="text" id="input-remark-payment" class="form-control" placeholder="Örn: Peşin">
+            </div>
+
+            <!-- Teklif Kapsamı -->
+            <div class="form-group col-span-2">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.3rem;">
+                <label class="form-label" for="input-remark-scope" style="margin-bottom: 0;">Teklif Kapsamı:</label>
+                <button type="button" class="btn btn-sm btn-dark" id="btn-toggle-scope-shipping" style="padding: 0.15rem 0.5rem; font-size: 0.72rem;">
+                  Nakliye Durumunu Değiştir
+                </button>
+              </div>
+              <textarea id="input-remark-scope" class="form-control" rows="2" placeholder="Örn: Fiyatlarımıza nakliye, sigorta, montaj, işletmeye alma ve süpervizyon hizmetleri dâhil değildir."></textarea>
+            </div>
+          </div>
+
+          <!-- Gelişmiş Şartlar Metin Düzenleyici -->
+          <div style="margin-top: 0.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <button type="button" class="btn btn-sm btn-dark" id="btn-toggle-remarks">Tüm Maddeleri Metin Olarak Gör / Düzenle</button>
+            <button type="button" class="btn btn-sm btn-dark" id="btn-reset-remarks">Varsayılana Sıfırla</button>
+          </div>
+
+          <!-- Akbank Kuru Seçeneği -->
+          <div class="toggle-switch-wrapper" id="toggle-akbank-rate-wrapper" style="margin-top: 0.65rem; padding: 0.45rem 0.75rem; background: rgba(255, 71, 87, 0.08); border: 1px dashed rgba(255, 71, 87, 0.35); border-radius: 6px;">
+            <label class="toggle-label" for="checkbox-akbank-rate" style="display: flex; align-items: center; justify-content: space-between; cursor: pointer; width: 100%; margin: 0;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="checkbox-akbank-rate" class="custom-checkbox">
+                <span style="font-size: 0.82rem; font-weight: 600; color: #ff6b81;">🏦 Akbank Kuru Kullan</span>
+              </div>
+              <span id="badge-akbank-rate-status" style="font-size: 0.72rem; padding: 2px 7px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); color: var(--text-dim); border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.2s ease;">TCMB Aktif</span>
+            </label>
+          </div>
+
+          <div id="remarks-editor-wrapper" style="display: none; margin-top: 0.75rem;">
+            <textarea id="input-remarks" class="form-control" rows="8" style="font-size: 0.75rem; font-family: monospace;"></textarea>
+          </div>
+        </section>
+
+      </div>
+    </aside>
+
+    <!-- SAĞ PANEL: Canlı A4 Belge Önizleme -->
+    <section class="preview-viewport">
+
+      <!-- Önizleme Kontrol Çubuğu -->
+      <div class="preview-controls-bar no-print">
+        <button type="button" class="preview-zoom-btn" id="btn-zoom-out" title="Uzaklaştır">-</button>
+        <span class="zoom-indicator" id="zoom-indicator">100%</span>
+        <button type="button" class="preview-zoom-btn" id="btn-zoom-in" title="Yakınlaştır">+</button>
+        <span style="color: var(--border-color);">|</span>
+        <button type="button" class="preview-zoom-btn active" id="btn-zoom-fit" title="Ekrana Sığdır">Sığdır</button>
+      </div>
+
+      <!-- Belge Konteyneri (A4 Sayfaları) -->
+      <div class="document-container" id="document-container">
+
+        <!-- ==================================================================
+             SAYFA 1: TEKLİF ÖN YAZISI
+             ================================================================== -->
+        <div class="a4-page" id="page-1">
+          <div class="a4-page-tag no-print">SAYFA 1 / 2 &mdash; TEKLİF ÖN YAZISI</div>
+
+          <!-- Üst Başlık: Sol Adres & Sağ Büyütülmüş Logo -->
+          <div class="page1-header-grid">
+            <div class="company-address-block">
+              <div class="company-name-bold" id="doc-company-short">Ortek Akışkan ve Pompa Teknolojileri</div>
+              <div id="doc-address-line1">Müeyyetzade, Necatibey Cd. 5/27</div>
+              <div id="doc-address-line2">Sait Demirbağ İş Hanı, 34425</div>
+              <div id="doc-address-line3">Beyoğlu/İstanbul</div>
+            </div>
+            <div class="doc-logo-box-right" id="doc-logo-box-right">
+              <!-- Ortek Logosu -->
+              <img src="assets/ortek-logo.png" alt="Ortek Logo" id="doc-logo-page1" class="ortek-main-logo">
+              <!-- PHS Çift Logo (PHS + Pompa Merkezi) -->
+              <div class="phs-logo-wrapper" id="phs-logo-wrapper-page1" style="display: none;">
+                <img src="assets/PHS Logo.png" alt="PHS" class="phs-main-logo">
+                <img src="assets/pompa-merkezi-logo.png" alt="Pompa Merkezi" class="phs-sub-logo">
+              </div>
+            </div>
+          </div>
+
+          <!-- Sayfa 1 İki Bloklu Referans & Muhatap Düzeni -->
+          <div class="page1-meta-container">
+            
+            <!-- BLOK 1: To & Address (Sol) | Date & Ref'ler (Sağ) -->
+            <div class="meta-block-grid">
+              <!-- Sol: To & Address -->
+              <div class="meta-col">
+                <div class="meta-row" style="visibility: hidden;">
+                  <span class="meta-label">Spacer</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-to">To:</span>
+                  <span class="meta-value meta-value-bold" id="doc-to"></span>
+                </div>
+                <div class="meta-row" style="margin-top: 3px;">
+                  <span class="meta-label" id="lbl-address">Address:</span>
+                  <span class="meta-value" id="doc-address"></span>
+                </div>
+              </div>
+
+              <!-- Sağ: Date & Ref Numaraları -->
+              <div class="meta-col meta-col-right">
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-date">Date:</span>
+                  <span class="meta-value" id="doc-date">08/07/2026</span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-quotation-ref">Quotation Ref:</span>
+                  <span class="meta-value" id="doc-quotation-ref">ORT-UNI08072026</span>
+                </div>
+                <div class="meta-row" id="doc-internal-ref-row">
+                  <span class="meta-label" id="lbl-internal-ref">Internal Ref No:</span>
+                  <span class="meta-value" id="doc-internal-ref"></span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-sales-force-ref">Sales Force Ref No:</span>
+                  <span class="meta-value" id="doc-sf-ref">202600001</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- BLOK 2: Attention, Tel, Email (Sol) | Prepared By (Sağ - Tel:'in tam karşısında ve ortalanmış) -->
+            <div class="meta-block-grid align-center">
+              <!-- Sol: Attention, Tel, Email -->
+              <div class="meta-col">
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-attention">Attention:</span>
+                  <span class="meta-value" id="doc-attention"></span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-tel">Tel:</span>
+                  <span class="meta-value" id="doc-tel"></span>
+                </div>
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-email">Email:</span>
+                  <span class="meta-value" id="doc-email"></span>
+                </div>
+              </div>
+
+              <!-- Sağ: Prepared By (Tel'in tam karşısına ve bloğun ortasına hizalı) -->
+              <div class="meta-col meta-col-right">
+                <div class="meta-row">
+                  <span class="meta-label" id="lbl-prepared-by" style="cursor: pointer;" title="Tıklayarak değiştirebilirsiniz">Prepared By:</span>
+                  <span class="meta-value" id="doc-prepared-by-page1" style="cursor: pointer;" title="Tıklayarak değiştirebilirsiniz">Melih Kurtgün</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Konu (Subject) -->
+          <div class="subject-block">
+            <span class="subject-label" id="lbl-subject">Subject:</span>
+            <span class="subject-text" id="doc-subject"></span>
+          </div>
+
+          <!-- Ön Yazı Gövdesi (English Letter) -->
+          <div class="letter-content" id="doc-letter-content">
+            <div class="letter-salutation" id="doc-salutation">Dear Sir / Mdm,</div>
+            <div class="letter-body-p">Thank you for the inquiry.</div>
+            <div class="letter-body-p">Please find below our proposal as per request.<br>Should you have any questions or need further information regarding the same, please do not hesitate to contact us</div>
+            <div class="letter-closing">Yours Sincerely,</div>
+          </div>
+
+          <!-- 1. Sayfa Alt İmza Bloğu (Doğrudan Tıklanabilir & Düzenlenebilir) -->
+          <div class="signer-box" id="doc-signer-box-clickable" style="cursor: pointer;" title="Bilgileri değiştirmek için tıklayın">
+            <div class="signer-row">
+              <span class="signer-label" id="lbl-signer-name">Name:</span>
+              <span id="doc-signer-name">Melih Kurtgün</span>
+            </div>
+            <div class="signer-row">
+              <span class="signer-label" id="lbl-signer-mobile">Mobile:</span>
+              <span id="doc-signer-mobile">+90 543 956 85 11</span>
+            </div>
+            <div class="signer-row">
+              <span class="signer-label" id="lbl-signer-email">Email :</span>
+              <span id="doc-signer-email">melih.kurtgun@ortek.com.tr</span>
+            </div>
+            <div class="signer-company-block">
+              <div class="company-title" id="doc-company-title-1">Ortek Akışkan ve Pompa Teknolojileri San.Tic.Ltd.Şti.</div>
+              <div class="person-role" id="doc-signer-title">Melih Kurtgün - Makine Mühendisi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================================================================
+             SAYFA 2: TEKLİF TABLOSU VE ŞARTLAR (QUOTATION & REMARKS)
+             ================================================================== -->
+        <div class="a4-page" id="page-2">
+          <div class="a4-page-tag no-print">SAYFA 2 / 2 &mdash; TEKLİF KALEMLERİ VE ŞARTLAR</div>
+
+          <!-- Üst Başlık: Sol Büyütülmüş Logo & Sağ Bilgi Bloğu -->
+          <div class="page2-header">
+            <div class="page2-logo-box">
+              <img src="assets/ortek-logo.png" alt="Logo" id="doc-logo-page2">
+            </div>
+            <div class="page2-header-meta">
+              <div class="page2-meta-row">
+                <span class="page2-meta-label">Date:</span>
+                <span id="doc2-date">08/07/2026</span>
+              </div>
+              <div class="page2-meta-row">
+                <span class="page2-meta-label">Ref:</span>
+                <span id="doc2-ref">ORT-UNI08072026</span>
+              </div>
+              <div class="page2-meta-row">
+                <span class="page2-meta-label">From:</span>
+                <span id="doc2-from"></span>
+              </div>
+              <div class="page2-meta-row">
+                <span class="page2-meta-label">Prepared By:</span>
+                <span id="doc2-prepared-by">Melih Kurtgün</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Başlık: Quotation -->
+          <div class="doc-title-quotation">Quotation</div>
+
+          <!-- Ürün / Fiyat Tablosu -->
+          <div class="quotation-table-wrapper">
+            <table class="quotation-table" id="doc-table">
+              <thead>
+                <tr>
+                  <th class="col-no">No</th>
+                  <th class="col-desc">Desprition</th>
+                  <th class="col-qty">Qty</th>
+                  <th class="col-price" id="th-unit-price">Unit Price EUR</th>
+                  <th class="col-total" id="th-total-price">Total Price EUR</th>
+                </tr>
+              </thead>
+              <tbody id="doc-table-body">
+                <!-- Kalemler Dinamik Olarak Eklenir -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Şartlar ve Koşullar (Remarks) -->
+          <div class="remarks-section">
+            <div class="remarks-header">Remarks : Şartlar ve koşullar:</div>
+            <ul class="remarks-list" id="doc-remarks-list">
+              <!-- JS ile otomatik doldurulur -->
+            </ul>
+          </div>
+
+          <!-- 2. Sayfa Alt Kapanış Bloğu -->
+          <div class="page2-signoff" style="page-break-inside: avoid !important; break-inside: avoid !important; display: block !important;">
+            <div class="closing-text" style="page-break-inside: avoid !important; break-inside: avoid !important;">Saygılarımla/Best Regards</div>
+            <div class="company-title" id="doc-company-title-2" style="page-break-inside: avoid !important; break-inside: avoid !important;">Ortek Akışkan ve Pompa Teknolojileri San.Tic.Ltd.Şti</div>
+            <div class="person-role" id="doc2-signer-title" style="page-break-inside: avoid !important; break-inside: avoid !important;">Melih Kurtgün - Makine Mühendisi</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       MODAL 1: İlk Açılış İsim Giriş Modal (Prepared By)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-initial-setup">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          <h2 style="font-size: 1.4rem; color: #006699; margin-bottom: 0.5rem;">Ortek Proposal Studio - Sistem Kurulumu</h2>
+        </span>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 1rem; line-height: 1.5;">
+          Ben <strong>Ortek Proposal Studio</strong>! Bu bilgisayarda teklifleri hazırlayan kişi oturumunu seçerek hemen başlayalım:
+        </p>
+        <div style="margin-bottom: 1.25rem;">
+          <label class="form-label" style="margin-bottom: 6px;">Kayıtlı Ekip Üyesini Seçin:</label>
+          <div id="setup-quick-users" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <button type="button" class="btn btn-dark btn-quick-pick-user" data-user="Melih Kurtgün" style="padding: 6px 12px; font-size: 0.8rem;">👤 Melih Kurtgün</button>
+            <button type="button" class="btn btn-dark btn-quick-pick-user" data-user="Fatih Yıldız" style="padding: 6px 12px; font-size: 0.8rem;">👤 Fatih Yıldız</button>
+            <button type="button" class="btn btn-dark btn-quick-pick-user" data-user="Halil İbrahim Çimen" style="padding: 6px 12px; font-size: 0.8rem;">👤 Halil İbrahim Çimen</button>
+            <button type="button" class="btn btn-dark btn-quick-pick-user" data-user="Enes Altuğ" style="padding: 6px 12px; font-size: 0.8rem;">👤 Enes Altuğ</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-prepared-by">Hazırlayan Kişi Adı (Prepared By):</label>
+          <input type="text" id="setup-prepared-by" class="form-control" placeholder="Adınız Soyadınız">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-signer-role">Unvan / Görev:</label>
+          <input type="text" id="setup-signer-role" class="form-control" value="Makine Mühendisi" placeholder="Örn: Makine Mühendisi">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-signer-mobile">İletişim Mobil (Mobile):</label>
+          <input type="text" id="setup-signer-mobile" class="form-control" value="+90 543 956 85 11" placeholder="+90 543 956 85 11">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-signer-email">İletişim E-Posta (Ortek):</label>
+          <input type="email" id="setup-signer-email" class="form-control" value="melih.kurtgun@ortek.com.tr" placeholder="melih.kurtgun@ortek.com.tr">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-phs-email">İletişim E-Posta (PHS):</label>
+          <input type="email" id="setup-phs-email" class="form-control" value="satisdestek@phspompa.com" placeholder="satisdestek@phspompa.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setup-security-pin">Güvenlik PIN Kodu (4 Haneli):</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="setup-security-pin" class="form-control" maxlength="4" value="1234" placeholder="Örn: 1234" style="letter-spacing: 4px; font-weight: bold; font-size: 1.05rem; padding-right: 38px;">
+            <button type="button" id="btn-toggle-setup-pin" title="Şifreyi Göster / Gizle" style="position: absolute; right: 8px; background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding: 4px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <small style="color: var(--text-dim); font-size: 0.72rem;">* Tekliflerinizi başkalarının izinsiz silmesini önlemek için 4 haneli PIN belirleyin.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="btn-save-initial-setup" style="width: 100%;">
+          Sistemi Başlat & Hafızaya Kaydet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 2: Profil ve Genel Ayarlar
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-profile">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Profil ve Sistem Ayarları
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-profile" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="modal-body">
+        <!-- Hızlı Kullanıcı Seçimi / Oturum Değiştir -->
+        <div style="background: rgba(0, 102, 153, 0.08); border: 1px solid rgba(0, 102, 153, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: #006699; display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              <span>Aktif Kullanıcı: <strong id="profile-active-user-badge" style="color: var(--text-main); margin-left: 4px;">-</strong></span>
+            </div>
+            <span style="font-size: 0.72rem; padding: 2px 8px; border-radius: 12px; background: rgba(46, 204, 113, 0.15); color: #2ecc71; font-weight: 600;">Oturum Açık</span>
+          </div>
+          <div style="font-size: 0.75rem; color: var(--text-dim); margin-bottom: 10px;">
+            Farklı bir ekip üyesi olarak oturum açmak için isminizi tıklayın ve 4 haneli PIN kodunuzu girin:
+          </div>
+          <div id="user-switch-list" style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <!-- JS ile dinamik doldurulur: Melih Kurtgün, Fatih Yıldız, Halil İbrahim Çimen vb. -->
+          </div>
+          
+          <!-- Hızlı PIN Giriş Alanı -->
+          <div id="user-switch-pin-area" style="display: none; background: var(--bg-card); border: 1px solid rgba(0, 180, 216, 0.4); border-radius: 6px; padding: 10px; margin-top: 10px;">
+            <div style="font-size: 0.78rem; font-weight: 600; margin-bottom: 6px; color: var(--text-main);" id="user-switch-target-label">
+              ... için PIN Kodu:
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="password" id="user-switch-pin-input" class="form-control" maxlength="4" placeholder="PIN" style="letter-spacing: 4px; font-weight: bold; width: 120px; padding: 6px 10px;">
+              <button type="button" class="btn btn-primary" id="btn-confirm-user-switch" style="padding: 6px 14px; font-size: 0.8rem;">Giriş Yap</button>
+              <button type="button" class="btn btn-dark" id="btn-cancel-user-switch" style="padding: 6px 10px; font-size: 0.8rem;">İptal</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="font-size: 0.82rem; font-weight: 600; color: var(--text-main); margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center;">
+          <span>Profil Detayları & Sayaç</span>
+          <button type="button" id="btn-new-user-form" style="background: none; border: none; color: #006699; font-size: 0.75rem; cursor: pointer; text-decoration: underline; font-weight: 500;">+ Yeni Kullanıcı Tanımla</button>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="setting-prepared-by">Hazırlayan (Prepared By):</label>
+          <input type="text" id="setting-prepared-by" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-signer-role">Unvan / Görev:</label>
+          <input type="text" id="setting-signer-role" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-signer-mobile">İletişim Mobil (Mobile):</label>
+          <input type="text" id="setting-signer-mobile" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-signer-email">İletişim E-Posta (Ortek):</label>
+          <input type="email" id="setting-signer-email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-phs-email">İletişim E-Posta (PHS):</label>
+          <input type="email" id="setting-phs-email" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-security-pin">Güvenlik PIN Kodu (4 Haneli):</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="setting-security-pin" class="form-control" maxlength="4" placeholder="Örn: 1234" style="letter-spacing: 4px; font-weight: bold; font-size: 1.05rem; padding-right: 38px;">
+            <button type="button" id="btn-toggle-setting-pin" title="Şifreyi Göster / Gizle" style="position: absolute; right: 8px; background: none; border: none; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; padding: 4px;">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+          <small style="color: var(--text-dim); font-size: 0.72rem;">* Tekliflerinizi başkalarının izinsiz silmesini önlemek için 4 haneli PIN belirleyin.</small>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="setting-sf-counter">Teklif Sayaç Numarası (Counter):</label>
+          <input type="number" id="setting-sf-counter" class="form-control" min="1" step="1">
+          <small style="color: var(--text-dim); font-size: 0.72rem;">* Bir sonraki teklifin sıra numarası (Örn: 15 ise 202600015 olur).</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-dark" id="btn-cancel-profile">İptal</button>
+        <button type="button" class="btn btn-primary" id="btn-save-profile">Ayarları Kaydet</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 3: Kayıtlı Teklifler Geçmişi
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-history">
+    <div class="modal-box" style="max-width: 650px;">
+      <div class="modal-header">
+        <span class="modal-title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          Kaydedilen Teklifler Listesi
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-history" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div style="padding: 0.65rem 1rem 0.35rem 1rem; border-bottom: 1px solid var(--border-color); background: rgba(0,0,0,0.15);">
+        <input type="text" id="history-search-input" class="form-control" placeholder="🔍 Teklif no, müşteri, hazırlayan veya tutar ara..." style="width: 100%; font-size: 0.84rem; padding: 0.45rem 0.75rem; background: var(--bg-input); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main);">
+      </div>
+      <div class="modal-body" id="history-list-container">
+        <!-- Kayıtlı teklifler listelenir -->
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-sm btn-dark" id="btn-save-current-quote">
+          Mevcut Teklifi Kaydet
+        </button>
+        <button type="button" class="btn btn-sm btn-dark" id="btn-close-history-footer">Kapat</button>
+      </div>
+    </div>
+  </div>
+  <!-- ==========================================================================
+       MODAL 4: Analiz ve Takip (CRM Dashboard)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-crm">
+    <div class="modal-box" style="max-width: 1100px; width: 96%;">
+      <div class="modal-header">
+        <span class="modal-title" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+            Teklif Durum Analizi ve CRM
+          </div>
+          <span id="crm-cloud-status" style="font-size: 0.72rem; padding: 3px 8px; border-radius: 12px; background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.35); font-weight: normal;">
+            Canlı Bulut Senkronizasyonu Aktif
+          </span>
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-crm" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 15px;">
+        
+        <!-- Üst Pano (Özet Metrikler) -->
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 130px; background: #2A2A2D; padding: 10px; border-radius: 4px; border-left: 3px solid var(--accent-emerald);">
+            <div style="font-size: 0.75rem; color: #888;">Toplam Teklif Sayısı</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #fff;" id="crm-total-count">0</div>
+          </div>
+          <div style="flex: 1; min-width: 130px; background: #2A2A2D; padding: 10px; border-radius: 4px; border-left: 3px solid #f39c12;">
+            <div style="font-size: 0.75rem; color: #888;">Bekleyen Teklifler</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #fff;" id="crm-pending-count">0</div>
+          </div>
+          <div style="flex: 1; min-width: 130px; background: #2A2A2D; padding: 10px; border-radius: 4px; border-left: 3px solid #27ae60;">
+            <div style="font-size: 0.75rem; color: #888;">Onaylanan (EUR)</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #27ae60;" id="crm-won-eur">-</div>
+          </div>
+          <div style="flex: 1; min-width: 130px; background: #2A2A2D; padding: 10px; border-radius: 4px; border-left: 3px solid #27ae60;">
+            <div style="font-size: 0.75rem; color: #888;">Onaylanan (USD)</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #27ae60;" id="crm-won-usd">-</div>
+          </div>
+          <div style="flex: 1; min-width: 130px; background: #2A2A2D; padding: 10px; border-radius: 4px; border-left: 3px solid #27ae60;">
+            <div style="font-size: 0.75rem; color: #888;">Onaylanan (TL)</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: #27ae60;" id="crm-won-try">-</div>
+          </div>
+        </div>
+
+        <!-- Filtre Çubuğu -->
+        <div style="display: flex; gap: 10px; align-items: center; background: #2A2A2D; padding: 10px; border-radius: 4px;">
+          <select class="form-control" id="crm-filter-company" style="width: 130px;">
+            <option value="all">Tüm Şirketler</option>
+            <option value="ortek">Sadece Ortek</option>
+            <option value="phs">Sadece PHS</option>
+          </select>
+          <select class="form-control" id="crm-filter-status" style="width: 130px;">
+            <option value="all">Tüm Durumlar</option>
+            <option value="Bekliyor">Bekleyenler</option>
+            <option value="Onaylandı">Onaylananlar</option>
+            <option value="Reddedildi">Reddedilenler</option>
+          </select>
+          <select class="form-control" id="crm-filter-prepared-by" style="width: 140px;">
+            <option value="all">Tüm Ekip</option>
+          </select>
+          <input type="text" class="form-control" id="crm-search-input" placeholder="Müşteri veya Ürün Ara..." style="flex: 1;">
+        </div>
+
+        <!-- Tablo Alanı -->
+        <div style="max-height: 440px; overflow-y: auto; overflow-x: hidden; border: 1px solid #333; border-radius: 4px;">
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.82rem; text-align: left; color: #e1e1e1; table-layout: fixed;">
+            <thead style="background: #252528; position: sticky; top: 0; z-index: 2;">
+              <tr>
+                <th style="padding: 8px 6px; width: 9%; border-bottom: 1px solid #333;">Tarih</th>
+                <th style="padding: 8px 6px; width: 7%; border-bottom: 1px solid #333; text-align: center;">Şirket</th>
+                <th style="padding: 8px 6px; width: 11%; border-bottom: 1px solid #333;">Teklif No</th>
+                <th style="padding: 8px 6px; width: 25%; border-bottom: 1px solid #333;">Müşteri / Sektör</th>
+                <th style="padding: 8px 6px; width: 16%; border-bottom: 1px solid #333;">Ürün Grupları</th>
+                <th style="padding: 8px 6px; width: 13%; border-bottom: 1px solid #333;">Tutar</th>
+                <th style="padding: 8px 6px; width: 9%; border-bottom: 1px solid #333; text-align: center;">Görüşme</th>
+                <th style="padding: 8px 6px; width: 10%; border-bottom: 1px solid #333; text-align: center;">Durum</th>
+              </tr>
+            </thead>
+            <tbody id="crm-table-body">
+              <!-- CRM Satırları Javascript İle Doldurulacak -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+      <div class="modal-footer" style="justify-content: space-between;">
+        <button type="button" class="btn btn-sm" id="btn-crm-export" style="background: #27ae60; color: white; border: none;">
+          Excel'e Aktar
+        </button>
+        <button type="button" class="btn btn-sm btn-dark" id="btn-close-crm-footer">Kapat</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- ==========================================================================
+       MODAL 5: Özel Silme Onay Penceresi (Sleek Dark/Cyan Theme)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-confirm-delete" style="z-index: 100000;">
+    <div class="modal-box" style="max-width: 480px; border: 1px solid rgba(231, 76, 60, 0.4); box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(231, 76, 60, 0.15);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+        <span class="modal-title" style="display: flex; align-items: center; gap: 8px; color: #ff6b6b; font-size: 1.05rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Teklifi Silme Onayı
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-confirm-delete" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 20px 0 15px 0;">
+        <div style="font-size: 0.95rem; color: #e1e1e1; margin-bottom: 14px; line-height: 1.5;">
+          <strong id="confirm-delete-ref" style="color: var(--accent-cyan); font-size: 1.1rem; letter-spacing: 0.5px;">-</strong> numaralı teklifi kalıcı olarak silmek istediğinizden emin misiniz?
+        </div>
+        
+        <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px;">
+          <div style="font-size: 0.85rem; color: #aaa; margin-bottom: 6px;">
+            Müşteri: <strong id="confirm-delete-customer" style="color: #fff;">-</strong>
+          </div>
+          <div style="font-size: 0.85rem; color: #aaa;">
+            Tutar: <strong id="confirm-delete-total" style="color: var(--accent-emerald);">-</strong>
+          </div>
+        </div>
+        
+        <div style="font-size: 0.78rem; color: #888; display: flex; align-items: center; gap: 6px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Bu işlem teklifi hem bu bilgisayardan hem de buluttan kalıcı olarak silecektir.
+        </div>
+        
+        <!-- Başkasına Ait Teklif Silme Güvenlik Alanı -->
+        <div id="delete-pin-container" style="display: none; margin-top: 14px; background: rgba(231, 76, 60, 0.12); border: 1px solid rgba(231, 76, 60, 0.35); border-radius: 8px; padding: 12px 16px;">
+          <div style="font-size: 0.85rem; color: #ff8b8b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Bu teklif <strong id="delete-author-name" style="color: #fff;">-</strong> tarafından hazırlanmıştır.</span>
+          </div>
+          <p style="font-size: 0.78rem; color: #ccc; margin-bottom: 8px; line-height: 1.4;">
+            Ekip arkadaşınızın teklifini silmek için lütfen 4 haneli PIN kodunu giriniz:
+          </p>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative; display: flex; align-items: center; width: 140px;">
+              <input type="password" id="input-delete-pin" class="form-control" maxlength="4" placeholder="••••" style="width: 100%; letter-spacing: 6px; font-size: 1.1rem; text-align: center; font-weight: bold; background: #1a1a1c; border-color: rgba(231, 76, 60, 0.5); color: #fff; padding-right: 32px;">
+              <button type="button" id="btn-toggle-delete-pin" title="Şifreyi Göster / Gizle" style="position: absolute; right: 6px; background: none; border: none; cursor: pointer; color: #888; display: flex; align-items: center; justify-content: center; padding: 2px;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
+            <span id="delete-pin-error" style="color: #ff6b6b; font-size: 0.78rem; display: none;">Hatalı PIN kodu!</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+        <button type="button" class="btn btn-dark" id="btn-cancel-confirm-delete" style="padding: 0.5rem 1.2rem;">Vazgeç</button>
+        <button type="button" class="btn" id="btn-submit-confirm-delete" style="background: #e74c3c; color: #fff; font-weight: 600; padding: 0.5rem 1.2rem; border: none; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Evet, Sil
+        </button>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- ==========================================================================
+       MODAL 6: Müşteri Görüşme & Teklif Takip Notları Modalı (CRM Notes)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-crm-notes" style="z-index: 100010;">
+    <div class="modal-box" style="max-width: 640px; width: 95%; border: 1px solid rgba(0, 180, 216, 0.4); box-shadow: 0 15px 50px rgba(0,0,0,0.8), 0 0 25px rgba(0, 180, 216, 0.15);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="modal-title" style="display: flex; align-items: center; gap: 8px; color: var(--accent-cyan); font-size: 1.05rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Müşteri Görüşme & Teklif Takip Notları
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-crm-notes" style="font-size: 1.2rem;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 16px 0 10px 0; display: flex; flex-direction: column; gap: 14px;">
+        <!-- Teklif Bilgi Kartı -->
+        <div style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-weight: 700; color: #fff; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+              <span id="notes-modal-ref" style="color: var(--accent-cyan); font-family: monospace; font-size: 1.05rem;">-</span>
+              <span id="notes-modal-customer" style="color: #fff;">-</span>
+            </div>
+            <div style="font-size: 0.78rem; color: #aaa; margin-top: 3px;">
+              Tutar: <strong id="notes-modal-total" style="color: var(--accent-emerald);">-</strong> &bull; Durum: <strong id="notes-modal-status" style="color: #f39c12;">-</strong>
+            </div>
+          </div>
+          <span id="notes-cloud-badge" style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: rgba(39, 174, 96, 0.15); color: #2ecc71; border: 1px solid rgba(39, 174, 96, 0.35);">
+            Canlı Bulut Senkronizasyonu Aktif
+          </span>
+        </div>
+
+        <!-- Notlar Geçmişi Başlığı -->
+        <div style="font-size: 0.82rem; font-weight: 600; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between;">
+          <span>Görüşme Notları Geçmişi (<span id="notes-count-display">0</span>)</span>
+          <span style="font-size: 0.75rem; color: #777; font-weight: normal;">* Tüm ekip üyeleri anlık olarak okuyabilir</span>
+        </div>
+
+        <!-- Notlar Listesi Konteyneri -->
+        <div id="notes-list-container" style="max-height: 250px; min-height: 90px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+          <!-- Dinamik notlar buraya eklenir -->
+        </div>
+
+        <!-- Yeni Not Ekleme Alanı -->
+        <div style="background: #252528; border: 1px solid #3a3a3e; border-radius: 8px; padding: 12px;">
+          <label style="display: block; font-size: 0.82rem; font-weight: 600; color: #ddd; margin-bottom: 6px;">
+            Yeni Görüşme Notu / Açıklama Ekle:
+          </label>
+          <textarea id="input-new-crm-note" class="form-control" rows="3" placeholder="Örn: Müşteri arandı, revizyon fiyatını onayladı. Sipariş formu haftaya gönderilecek..." style="resize: vertical; font-size: 0.85rem; width: 100%; box-sizing: border-box; background: #1E1E20; color: #fff;"></textarea>
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <span style="font-size: 0.75rem; color: #777;">
+              Yazan: <strong id="notes-current-author" style="color: var(--accent-cyan);">-</strong>
+            </span>
+            <button type="button" class="btn btn-primary" id="btn-save-crm-note" style="padding: 0.45rem 1rem; font-size: 0.85rem; display: flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Notu Kaydet & Ekipe Paylaş
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+        <button type="button" class="btn btn-dark" id="btn-close-crm-notes-footer" style="padding: 0.5rem 1.2rem;">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Bildirim Konteyneri -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- ==========================================================================
+       MODAL 7: Görüşme Notu Silme Onayı (Sleek Dark Theme)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-confirm-delete-note" style="z-index: 100030;">
+    <div class="modal-box" style="max-width: 440px; border: 1px solid rgba(231, 76, 60, 0.4); box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(231, 76, 60, 0.15);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+        <span class="modal-title" style="display: flex; align-items: center; gap: 8px; color: #ff6b6b; font-size: 1.05rem;">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Görüşme Notunu Sil
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-delete-note" style="font-size: 1.2rem;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 18px 0 12px 0;">
+        <div style="font-size: 0.95rem; color: #e1e1e1; margin-bottom: 14px; line-height: 1.5;">
+          Bu görüşme notunu kalıcı olarak silmek istediğinizden emin misiniz?
+        </div>
+        <div id="delete-note-preview-box" style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px;">
+          <div style="font-size: 0.78rem; color: #888; margin-bottom: 5px; display: flex; justify-content: space-between;">
+            <span id="delete-note-author" style="color: var(--accent-cyan); font-weight: 600;">-</span>
+            <span id="delete-note-date">-</span>
+          </div>
+          <div id="delete-note-snippet" style="font-size: 0.84rem; color: #ccc; line-height: 1.4; word-break: break-word;">-</div>
+        </div>
+        <div style="font-size: 0.75rem; color: #888; display: flex; align-items: center; gap: 6px;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          Bu işlem notu hem bu bilgisayardan hem de buluttan kalıcı olarak silecektir.
+        </div>
+      </div>
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+        <button type="button" class="btn btn-dark" id="btn-cancel-delete-note" style="padding: 0.5rem 1.2rem;">Vazgeç</button>
+        <button type="button" class="btn" id="btn-submit-delete-note" style="background: #e74c3c; color: #fff; font-weight: 600; padding: 0.5rem 1.2rem; border: none; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Evet, Sil
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 8: Ekip İçi Canlı Mesajlaşma (Live Team Chat)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-team-chat" style="z-index: 100025;">
+    <div class="modal-box chat-modal-box">
+      <!-- Modal Üst Başlık -->
+      <div class="chat-modal-header">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(0, 210, 255, 0.15); border: 1px solid rgba(0, 210, 255, 0.4); display: flex; align-items: center; justify-content: center; color: var(--accent-cyan);">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div>
+            <span style="font-weight: 700; font-size: 1.05rem; color: #fff;">Ekip Canlı Mesajlaşma</span>
+            <span style="font-size: 0.72rem; color: var(--text-dim); margin-left: 8px;">Ortek & PHS Ekip İletişimi</span>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-team-chat" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Modal Gövde: Sol Kişiler & Sağ Konuşma -->
+      <div class="chat-modal-body">
+        <!-- SOL: Kişi Listesi -->
+        <div class="chat-users-sidebar">
+          <div class="chat-users-search-box">
+            <input type="text" id="chat-users-search-input" class="chat-users-search-input" placeholder="Kişi ara...">
+          </div>
+          <div id="chat-users-list" class="chat-users-list">
+            <!-- Dinamik kişi listesi -->
+          </div>
+        </div>
+
+        <!-- SAĞ: Canlı Konuşma Alanı -->
+        <div class="chat-conversation-area">
+          <!-- Aktif Konuşulan Kişi Barı -->
+          <div class="chat-partner-bar">
+            <div class="chat-partner-info">
+              <div class="chat-partner-details">
+                <span id="chat-active-user-name" class="chat-partner-name">-</span>
+                <span id="chat-active-user-status" class="chat-partner-status">
+                  <span class="chat-user-status-dot online" style="position: static; display: inline-block;"></span>
+                  <span>Çevrimiçi</span>
+                </span>
+              </div>
+            </div>
+            <div class="chat-auto-delete-hint" title="Sistem mesajları bulutta yer kaplamaması için 7 gün sonra otomatik olarak temizler">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>1 Hafta Sonra Otomatik Silinir</span>
+            </div>
+          </div>
+
+          <!-- Mesajlar Listesi -->
+          <div id="chat-messages-container" class="chat-messages-container">
+            <!-- Mesaj balonları dinamik yüklenecek -->
+          </div>
+
+          <!-- Mesaj Yazma Alanı -->
+          <form id="chat-composer-form" class="chat-composer" onsubmit="return false;">
+            <input type="text" id="input-team-chat-msg" class="chat-input" placeholder="Mesajınızı yazın... (Enter ile gönder)" autocomplete="off">
+            <button type="submit" id="btn-send-team-chat" class="btn-send-chat">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <span>Gönder</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <!-- ==========================================================================
+       MODAL 9: Geçerlilik Süresi Dolan Teklif Hatırlatmaları (Expiry Reminders Modal)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-expiry-reminders" style="z-index: 100028;">
+    <div class="modal-box" style="max-width: 720px; border: 1px solid rgba(245, 158, 11, 0.4); box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 25px rgba(245, 158, 11, 0.18);">
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 34px; height: 34px; border-radius: 8px; background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.4); display: flex; align-items: center; justify-content: center; color: #fbbf24;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+          <div>
+            <span class="modal-title" style="color: #fbbf24; font-size: 1.1rem; font-weight: 700;">Geçerlilik Süresi Dolan Teklifler</span>
+            <div style="font-size: 0.75rem; color: #aaa; margin-top: 2px;" id="expiry-modal-subtitle">Müşterilerle iletişime geçip teklif durumunu güncelleyebilirsiniz.</div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-expiry-modal" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 16px 0; max-height: 60vh; overflow-y: auto;">
+        <div id="expiry-modal-list" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Dinamik teklif hatırlatma kartları buraya gelecek -->
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+        <div style="font-size: 0.78rem; color: #888; display: flex; align-items: center; gap: 6px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          <span>İletişime geçilen teklifler ana ekrandan ve bildirim çanından kalkar.</span>
+        </div>
+        <button type="button" class="btn btn-dark" id="btn-close-expiry-footer" style="padding: 0.5rem 1.4rem;">Tamam / Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 10: Standart Sondaj Teklifi Şablon Onay Modalı (Ortek Cyan/Dark Tema)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-confirm-sondaj" style="z-index: 100035;">
+    <div class="modal-box" style="max-width: 500px; border: 1px solid rgba(0, 180, 216, 0.45); box-shadow: 0 12px 45px rgba(0,0,0,0.85), 0 0 25px rgba(0, 180, 216, 0.2);">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <img src="assets/sondaj-well.svg" width="38" height="38" style="border-radius: 9px; box-shadow: 0 3px 12px rgba(0, 180, 216, 0.35); flex-shrink: 0; display: block;" alt="Sondaj Kuyusu">
+          <div>
+            <span class="modal-title" style="color: var(--accent-cyan); font-size: 1.05rem;" id="sondaj-modal-title">Sondaj Teklifi Şablonu</span>
+            <div style="font-size: 0.74rem; color: #8ecae6; margin-top: 2px;" id="sondaj-modal-subtitle">8 Kalemlik Standart Dalgıç & Sondaj Başlıkları</div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-sondaj-modal" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.2rem 1.4rem;">
+        <div id="sondaj-modal-warning" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #fbbf24; line-height: 1.45;">
+          <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 3px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="sondaj-modal-warning-title">Mevcut Kalemler Temizlenecektir!</span>
+          </div>
+          <span id="sondaj-modal-warning-desc">Şu anda girdiğiniz ürün ve fiyat verileri silinerek yerine 8 standart sondaj kalemi yüklenecektir.</span>
+        </div>
+
+        <p style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.5; margin: 0;" id="sondaj-modal-desc">
+          Aşağıdaki 8 kalem hazır başlık ve birim ayarlarıyla teklifinize eklenecektir:
+        </p>
+
+        <div id="sondaj-modal-items-preview" style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 0.79rem;">
+          <div style="color: #fff;">1. Dalgıç Motor <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+          <div style="color: #fff;">2. Dalgıç Pompa <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+          <div style="color: #fff;">3. Elektrik Kablosu <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
+          <div style="color: #fff;">4. Kontrol Panosu <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+          <div style="color: #fff;">5. Kuyu Akıtma Başlığı <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+          <div style="color: #fff;">6. Paslanmaz Klemens <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
+          <div style="color: #fff;">7. İzoleli Çelik Halat <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
+          <div style="color: #fff;">8. Üst Kolon Adaptörü <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <button type="button" class="btn btn-dark" id="btn-cancel-sondaj" style="padding: 0.5rem 1.2rem;">Vazgeç</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn" id="btn-clear-sondaj" title="Sondaj şablonunu silip teklifi orijinal haline geri döndürür" style="background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.45); color: #ff6b6b; font-weight: 600; padding: 0.5rem 1.1rem; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s ease;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span id="sondaj-modal-clear-text">Şablonu Sil</span>
+          </button>
+          <button type="button" class="btn" id="btn-confirm-sondaj-apply" style="background: linear-gradient(135deg, #0077b6, #0096c7); color: #fff; font-weight: 600; padding: 0.5rem 1.3rem; border: none; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 3px 8px rgba(0, 150, 199, 0.35);">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="sondaj-modal-submit-text">Şablonu Yükle</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 11: TCMB Kur Hesaplama & Döviz Çevirici (Efektif Satış / Banknote Selling)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-currency-calc" style="z-index: 100040;">
+    <div class="modal-box" style="max-width: 780px; width: 96%; overflow: hidden;">
+      <!-- Modal Başlığı -->
+      <div class="modal-header" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div id="calc-header-icon-box" style="width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, #0077b6, #00b4d8); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0, 180, 216, 0.35); flex-shrink: 0; transition: all 0.3s ease;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div>
+            <div class="modal-title" id="calc-modal-title-wrap" style="color: var(--accent-cyan); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span id="calc-modal-title">TCMB Döviz Çevirici & Kur Hesaplama</span>
+              <span class="badge-live-pulse" id="calc-modal-live-pulse" title="Canlı Kurlar"></span>
+            </div>
+            <div id="calc-modal-subtitle" style="font-size: 0.74rem; color: #8ecae6; margin-top: 2px;">
+              T.C. Merkez Bankası <strong>Efektif Satış (Banknote Selling)</strong> kurları baz alınmaktadır.
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-currency-calc" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Modal Gövdesi -->
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 12px; padding: 14px 18px; overflow-x: hidden; max-height: 82vh;">
+        
+        <!-- 1. Kur Kaynağı Seçimi (TCMB / AKBANK) ve Yenileme Butonu -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 7px 12px; font-size: 0.78rem;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 0.76rem; color: #94a3b8; font-weight: 600;">Kur Kaynağı:</span>
+            <div class="rate-source-toggle-group" style="display: flex; gap: 6px;">
+              <button type="button" class="btn-rate-source active-tcmb" id="btn-source-tcmb" style="padding: 4px 12px; font-size: 0.75rem; border-radius: 5px; font-weight: 600; cursor: pointer;">🏛️ TCMB Efektif</button>
+              <button type="button" class="btn-rate-source" id="btn-source-akbank" style="padding: 4px 12px; font-size: 0.75rem; border-radius: 5px; font-weight: 600; cursor: pointer;">🏦 Akbank Gişe Satış</button>
+            </div>
+          </div>
+          <button type="button" class="btn btn-dark" id="btn-refresh-tcmb-rates" title="Kurları internetten yeniden çek" style="padding: 4px 11px; font-size: 0.74rem; display: flex; align-items: center; gap: 5px;">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span id="btn-refresh-rates-text">Kurları Yenile</span>
+          </button>
+        </div>
+
+        <!-- 2. Canlı Bülten / Güncelleme Durumu -->
+        <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0, 0, 0, 0.22); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 6px; padding: 6px 12px; font-size: 0.76rem;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg id="calc-bulletin-icon" viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#00b4d8" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span id="calc-tcmb-bulletin-info" style="color: #cbd5e1; font-weight: 500;">TCMB Bülteni yükleniyor...</span>
+          </div>
+        </div>
+
+        <!-- 3. Düzenlenebilir Kurlar Alanı (EUR & USD) -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <!-- EUR Kartı -->
+          <div class="rate-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="lbl-rate-eur" style="font-size: 0.78rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 4px;">
+                💶 1 EURO (EUR) Satış:
+              </span>
+              <span class="rate-badge tcmb" id="badge-rate-eur">TCMB</span>
+            </div>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input type="number" step="0.0001" min="0" id="input-rate-eur" class="form-control" style="font-size: 1.1rem; font-weight: 700; color: #00b4d8; padding-right: 32px;" title="Kuru değiştirmek için buraya yeni değer yazabilirsiniz">
+              <span style="position: absolute; right: 10px; font-weight: 700; color: #94a3b8; pointer-events: none;">₺</span>
+            </div>
+            <div style="font-size: 0.69rem; color: #94a3b8;">* Değeri değiştirerek özel kur uygulayabilirsiniz.</div>
+          </div>
+
+          <!-- USD Kartı -->
+          <div class="rate-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="lbl-rate-usd" style="font-size: 0.78rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 4px;">
+                💵 1 DOLAR (USD) Satış:
+              </span>
+              <span class="rate-badge tcmb" id="badge-rate-usd">TCMB</span>
+            </div>
+            <div style="position: relative; display: flex; align-items: center;">
+              <input type="number" step="0.0001" min="0" id="input-rate-usd" class="form-control" style="font-size: 1.1rem; font-weight: 700; color: #00b4d8; padding-right: 32px;" title="Kuru değiştirmek için buraya yeni değer yazabilirsiniz">
+              <span style="position: absolute; right: 10px; font-weight: 700; color: #94a3b8; pointer-events: none;">₺</span>
+            </div>
+            <div style="font-size: 0.69rem; color: #94a3b8;">* Değeri değiştirerek özel kur uygulayabilirsiniz.</div>
+          </div>
+        </div>
+
+        <!-- Sıfırla Çubuğu (yalnızca özel kur girildiğinde görünür) -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; margin-top: -6px; min-height: 22px;">
+          <button type="button" class="btn btn-dark" id="btn-reset-tcmb-rates" style="display: none; padding: 3px 8px; font-size: 0.72rem; color: #f59e0b; border-color: rgba(245, 158, 11, 0.4);">
+            ↺ Orijinal Kurlara Dön
+          </button>
+        </div>
+
+        <!-- 3. Tutar ve Kaynak Para Birimi Giriş Alanı (İşlem Her Zaman KDV'siz / Net Alınır) -->
+        <div style="background: rgba(0, 0, 0, 0.28); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;">
+          <div style="display: grid; grid-template-columns: 1.4fr 1.2fr 0.8fr; gap: 12px; align-items: flex-end;">
+            <!-- Tutar Girişi (Her Zaman KDV'siz Net) -->
+            <div>
+              <label class="form-label" style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; display: block;">Hesaplanacak Tutar (KDV'siz / Net):</label>
+              <input type="text" id="input-calc-amount" class="form-control" placeholder="0,00" style="font-size: 1.15rem; font-weight: 700; color: #ffffff;">
+            </div>
+
+            <!-- Kaynak Para Birimi Seçimi -->
+            <div>
+              <label class="form-label" style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; display: block;">Kaynak Para Birimi:</label>
+              <div class="currency-toggle-group" id="calc-currency-toggles">
+                <button type="button" class="btn-currency-toggle active" data-cur="EUR">💶 EUR</button>
+                <button type="button" class="btn-currency-toggle" data-cur="USD">💵 USD</button>
+                <button type="button" class="btn-currency-toggle" data-cur="TRY">₺ TL</button>
+              </div>
+            </div>
+
+            <!-- KDV Oranı Seçimi -->
+            <div>
+              <label class="form-label" style="font-size: 0.75rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; display: block;">KDV Oranı:</label>
+              <select id="select-calc-vat" class="form-control" style="font-size: 0.82rem; font-weight: 600; padding: 7px 10px;">
+                <option value="20" selected>%20 KDV</option>
+                <option value="10">%10 KDV</option>
+                <option value="1">%1 KDV</option>
+                <option value="0">%0 (KDV'siz)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Teklif Tutarını Al Butonu (KDV'siz Net Ara Toplam) -->
+          <div style="display: flex; align-items: center;">
+            <button type="button" class="btn btn-dark" id="btn-calc-quote-subtotal" style="padding: 5px 12px; font-size: 0.76rem; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(0, 180, 216, 0.35);">
+              <span>📋 Teklif Tutarını Al (KDV'siz):</span>
+              <strong id="badge-quote-subtotal-preview" style="color: var(--accent-emerald);">0,00 EUR</strong>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4. Kompakt Kare Karşılaştırma Tablosu -->
+        <div>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 5px;">
+              <span>📊 Dönüşüm ve KDV Karşılaştırma Tablosu</span>
+            </span>
+            <span style="font-size: 0.72rem; color: #94a3b8;">(Tüm para birimleri canlı hesaplanır)</span>
+          </div>
+
+          <table class="calc-results-table">
+            <thead>
+              <tr>
+                <th style="text-align: left;">Para Birimi</th>
+                <th style="text-align: right;">KDV'siz (Net)</th>
+                <th style="text-align: right;" id="th-calc-vat-col">KDV (%20)</th>
+                <th style="text-align: right; color: var(--accent-emerald);">Genel Toplam (KDV Dahil)</th>
+                <th style="text-align: right;">Uygulanan Kur</th>
+                <th style="text-align: center; width: 65px;">Kopyala</th>
+              </tr>
+            </thead>
+            <tbody id="calc-results-tbody">
+              <!-- JS ile dinamik olarak doldurulur: EUR, USD, TRY -->
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <!-- Modal Alt Çubuğu -->
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div id="calc-modal-footer-note" style="font-size: 0.71rem; color: #64748b;">
+          * TCMB Efektif Satış kurları her iş günü 15:30'da bültenleşir ve ertesi gün 15:30'a kadar yürürlüktedir.
+        </div>
+        <button type="button" class="btn btn-dark" id="btn-close-currency-calc-footer" style="padding: 0.5rem 1.4rem;">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 12: Marka Alış İskonto Oranları Yönetimi
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-brand-discounts" style="z-index: 100050;">
+    <div class="modal-box" style="max-width: 980px; width: 96%; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;">
+      <!-- Modal Başlığı -->
+      <div class="modal-header" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 40px; height: 40px; border-radius: 8px; background: linear-gradient(135deg, #d97706, #f59e0b); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35); flex-shrink: 0;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#ffffff" stroke-width="2.2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+          </div>
+          <div>
+            <div class="modal-title" style="color: #fbbf24; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <span>Marka Alış İskonto Oranları</span>
+              <span class="badge" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.4); font-size: 0.68rem; padding: 2px 7px; border-radius: 4px;">Dinamik Yönetim</span>
+            </div>
+            <div style="font-size: 0.74rem; color: #94a3b8; margin-top: 2px;">
+              Satışı yapılan ürünlerin güncel alış iskonto oranları ve kademe tanımları
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-brand-discounts" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Araç Çubuğu: Arama + Marka Ekle + Tüm Geçmiş -->
+      <div style="padding: 10px 18px; background: rgba(0, 0, 0, 0.22); border-bottom: 1px solid rgba(255, 255, 255, 0.07); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+        <div style="position: relative; flex: 1; min-width: 220px; max-width: 360px;">
+          <input type="text" id="input-search-brand-discounts" class="form-control" placeholder="Marka veya grup ara..." style="padding-left: 32px; font-size: 0.8rem; height: 34px;">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 10px; top: 10px; pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button type="button" class="btn btn-dark" id="btn-view-all-discount-history" style="font-size: 0.76rem; padding: 6px 12px; display: inline-flex; align-items: center; gap: 6px; border-color: rgba(255,255,255,0.15); color: #cbd5e1;" title="Tüm iskonto değişiklik geçmişini görüntüle">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M12 7v5l4 2"/>
+            </svg>
+            <span>Tüm Geçmiş (↺)</span>
+          </button>
+          <button type="button" class="btn" id="btn-open-add-brand" style="background: linear-gradient(135deg, #10b981, #059669); color: #ffffff; font-size: 0.76rem; font-weight: 600; padding: 6px 13px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: none; cursor: pointer; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>+ Yeni Marka Ekle</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Bilgi Notu -->
+      <div style="padding: 7px 18px; background: rgba(245, 158, 11, 0.08); border-bottom: 1px solid rgba(245, 158, 11, 0.15); display: flex; align-items: center; gap: 8px; font-size: 0.73rem; color: #fbbf24;">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <span>Yapılan tüm iskonto değişiklikleri, değiştiren personelin adı ve tarihi ile birlikte sisteme otomatik olarak kaydedilir.</span>
+      </div>
+
+      <!-- Modal Gövdesi: Marka Listesi -->
+      <div class="modal-body" style="padding: 14px 18px; overflow-y: auto; flex: 1;">
+        <div id="brand-discounts-list" class="brand-discounts-grid">
+          <!-- JS ile doldurulacak -->
+        </div>
+      </div>
+
+      <!-- Modal Alt Çubuğu -->
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
+        <div id="brand-discounts-counter" style="font-size: 0.74rem; color: #94a3b8;">
+          Toplam 15 marka listeleniyor
+        </div>
+        <button type="button" class="btn btn-dark" id="btn-close-brand-discounts-footer" style="padding: 0.5rem 1.4rem;">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 13: Kademeli Marka İskonto Detayı (İmpo T1-T4, Wilo vb.)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-tier-discounts" style="z-index: 100060;">
+    <div class="modal-box" style="max-width: 840px; width: 96%; overflow: hidden; display: flex; flex-direction: column;">
+      <!-- Başlık -->
+      <div class="modal-header" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          </div>
+          <div>
+            <div class="modal-title" style="color: #38bdf8; font-size: 1.02rem; display: flex; align-items: center; gap: 8px;">
+              <span id="tier-modal-brand-title">İmpo</span>
+              <span style="font-size: 0.78rem; font-weight: normal; color: #94a3b8;">Kademe & İskonto Yönetimi</span>
+            </div>
+            <div style="font-size: 0.72rem; color: #64748b;">
+              Bu markanın ürün gruplarına özel farklı iskonto oranları uygulanmaktadır.
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-tier-discounts" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Gövde: Kademe Tablosu/Listesi -->
+      <div class="modal-body" style="padding: 16px 18px; overflow-y: auto; max-height: 65vh;">
+        <div style="margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 0.78rem; font-weight: 700; color: #cbd5e1;">Tanımlı İskonto Kademeleri:</span>
+          <button type="button" class="btn btn-dark" id="btn-add-new-tier-row" style="font-size: 0.74rem; padding: 4px 10px; display: inline-flex; align-items: center; gap: 5px; color: #38bdf8; border-color: rgba(56, 189, 248, 0.4);">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>+ Yeni Kademe Ekle</span>
+          </button>
+        </div>
+
+        <div id="tier-items-table-container">
+          <!-- JS ile doldurulur -->
+        </div>
+      </div>
+
+      <!-- Alt Çubuk -->
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div style="font-size: 0.74rem; color: #94a3b8;">
+          Kademe adı, ürün grubu veya iskonto oranlarını düzenleyip kaydedebilirsiniz.
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button type="button" class="btn btn-dark" id="btn-close-tier-discounts-footer" style="padding: 0.5rem 1.2rem;">Kapat</button>
+          <button type="button" class="btn btn-primary" id="btn-save-tier-discounts" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; font-weight: 600; padding: 0.5rem 1.3rem; border: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Değişiklikleri Kaydet</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 13B: İskonto Güvenlik ve Onay PIN Modalı (Ortek Teması & Fontu)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-confirm-discount-pin" style="z-index: 100085;">
+    <div class="modal-box" style="max-width: 480px; width: 94%; border: 1px solid rgba(245, 158, 11, 0.45); box-shadow: 0 12px 40px rgba(0,0,0,0.85), 0 0 25px rgba(245, 158, 11, 0.15); font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+      <!-- Başlık -->
+      <div class="modal-header" style="border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+        <span class="modal-title" style="display: flex; align-items: center; gap: 9px; color: #fbbf24; font-size: 1.05rem; font-weight: 700;">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fbbf24" stroke-width="2.2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <circle cx="12" cy="11" r="2.5"/>
+          </svg>
+          <span>İskonto Değişiklik Onayı</span>
+        </span>
+        <button type="button" class="btn-remove-item" id="btn-close-discount-pin" style="font-size: 1.2rem;">&times;</button>
+      </div>
+
+      <!-- Gövde -->
+      <div class="modal-body" style="padding: 18px 0 12px 0;">
+        <div style="font-size: 0.90rem; color: #e2e8f0; line-height: 1.5; margin-bottom: 14px;">
+          İskonto oranında değişiklik yapmak üzeresiniz. Yanlışlıkla yapılan değişikliklerin önüne geçmek için lütfen onaylayıp şifrenizi giriniz.
+        </div>
+
+        <!-- Değişiklik Özeti Kutusu -->
+        <div id="discount-pin-summary-box" style="background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.09); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px;">
+          <div style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 6px;">
+            Marka / Kademe: <strong id="discount-pin-target-name" style="color: #ffffff; font-size: 0.95rem;">-</strong>
+          </div>
+          <div id="discount-pin-diff-row" style="font-size: 0.85rem; color: #94a3b8; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span>Değişiklik:</span>
+            <span id="discount-pin-old-val" style="padding: 2px 8px; border-radius: 4px; background: rgba(239, 68, 68, 0.15); color: #f87171; font-weight: 700;">-</span>
+            <span style="color: #64748b;">➔</span>
+            <span id="discount-pin-new-val" style="padding: 2px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.15); color: #34d399; font-weight: 700;">-</span>
+          </div>
+          <div id="discount-pin-custom-desc" style="display: none; font-size: 0.80rem; color: #38bdf8; margin-top: 6px; line-height: 1.4;"></div>
+          <div style="font-size: 0.76rem; color: #64748b; margin-top: 8px;">
+            İşlemi Yapan: <span id="discount-pin-author" style="color: #cbd5e1; font-weight: 600;">-</span>
+          </div>
+        </div>
+
+        <!-- PIN Giriş Kutusu -->
+        <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.28); border-radius: 8px; padding: 14px 16px;">
+          <div style="font-size: 0.82rem; color: #fbbf24; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Güvenlik PIN Şifrenizi Giriniz:</span>
+          </div>
+          <div style="font-size: 0.74rem; color: #cbd5e1; margin-bottom: 10px;">
+            Değişikliği sisteme kaydetmek için lütfen 4 haneli PIN kodunuzu giriniz:
+          </div>
+          <div style="display: flex; gap: 10px; align-items: center;">
+            <div style="position: relative; display: flex; align-items: center; width: 140px;">
+              <input type="password" id="input-discount-pin" class="form-control" maxlength="4" placeholder="••••" autocomplete="off" style="width: 100%; letter-spacing: 6px; font-size: 1.15rem; text-align: center; font-weight: bold; background: #15181e; border-color: rgba(245, 158, 11, 0.5); color: #fbbf24; padding-right: 32px;">
+              <button type="button" id="btn-toggle-discount-pin" title="Şifreyi Göster / Gizle" style="position: absolute; right: 6px; background: none; border: none; cursor: pointer; color: #94a3b8; display: flex; align-items: center; justify-content: center; padding: 2px;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="11" r="3"/></svg>
+              </button>
+            </div>
+            <span id="discount-pin-error" style="color: #f87171; font-size: 0.78rem; font-weight: 600; display: none;">Hatalı PIN kodu!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alt Butonlar -->
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 14px;">
+        <button type="button" class="btn btn-dark" id="btn-cancel-discount-pin" style="padding: 0.5rem 1.2rem;">Vazgeç</button>
+        <button type="button" class="btn" id="btn-submit-discount-pin" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; font-weight: 700; padding: 0.5rem 1.3rem; border: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <span>Onayla ve Kaydet</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 14: İskonto Değişiklik Geçmişi (Audit Trail)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-discount-history" style="z-index: 100070;">
+    <div class="modal-box" style="max-width: 720px; width: 95%; overflow: hidden; display: flex; flex-direction: column;">
+      <!-- Başlık -->
+      <div class="modal-header" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 38px; height: 38px; border-radius: 8px; background: linear-gradient(135deg, #6366f1, #4f46e5); display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+              <path d="M3 3v5h5"/>
+              <path d="M12 7v5l4 2"/>
+            </svg>
+          </div>
+          <div>
+            <div class="modal-title" style="color: #a5b4fc; font-size: 1.02rem; display: flex; align-items: center; gap: 8px;">
+              <span>İskonto Değişiklik Geçmişi</span>
+              <span id="history-modal-filter-badge" class="badge" style="background: rgba(99, 102, 241, 0.2); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.4); font-size: 0.68rem; padding: 2px 7px; border-radius: 4px;">Tüm Kayıtlar</span>
+            </div>
+            <div style="font-size: 0.72rem; color: #94a3b8;">
+              Kim, ne zaman, hangi oranda değişiklik yaptı? Detaylı zaman akışı.
+            </div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-discount-history" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Filtreleme Çubuğu -->
+      <div style="padding: 8px 18px; background: rgba(0, 0, 0, 0.2); border-bottom: 1px solid rgba(255, 255, 255, 0.07); display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <span style="font-size: 0.74rem; color: #94a3b8;">Marka Filtresi:</span>
+        <select id="select-history-brand-filter" class="form-control" style="width: auto; min-width: 180px; font-size: 0.78rem; padding: 3px 8px; height: 30px;">
+          <option value="all">Tüm Markalar</option>
+        </select>
+      </div>
+
+      <!-- Gövde: Timeline -->
+      <div class="modal-body" style="padding: 16px 18px; overflow-y: auto; max-height: 65vh;">
+        <div id="discount-history-timeline-container">
+          <!-- JS ile doldurulur -->
+        </div>
+      </div>
+
+      <!-- Alt Çubuk -->
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <div id="history-total-count" style="font-size: 0.72rem; color: #64748b;">
+          0 kayıt listeleniyor
+        </div>
+        <button type="button" class="btn btn-dark" id="btn-close-discount-history-footer" style="padding: 0.5rem 1.4rem;">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 15: Yeni Marka Ekleme Modalı
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-add-brand" style="z-index: 100080;">
+    <div class="modal-box" style="max-width: 520px; width: 95%; overflow: hidden;">
+      <!-- Başlık -->
+      <div class="modal-header" style="align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 18px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #10b981, #059669); display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <div>
+            <div class="modal-title" style="color: #34d399; font-size: 1.02rem;">Yeni Marka Ekle</div>
+            <div style="font-size: 0.72rem; color: #94a3b8;">Bünyeye yeni katılan ürün ve markalar için iskonto tanımı</div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-add-brand" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <!-- Gövde Form -->
+      <div class="modal-body" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 14px;">
+        <div class="form-group">
+          <label for="input-new-brand-name" style="font-size: 0.78rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; display: block;">Marka Adı:</label>
+          <input type="text" id="input-new-brand-name" class="form-control" placeholder="Örn: Wilo, Alarko, Dalgakıran..." required style="font-size: 0.85rem;">
+        </div>
+
+        <div class="form-group">
+          <label style="font-size: 0.78rem; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; display: block;">İskonto Yapısı:</label>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <label class="brand-type-choice-label" style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; cursor: pointer;">
+              <input type="radio" name="new-brand-type" value="single" checked style="margin-top: 3px;">
+              <div>
+                <div style="font-size: 0.8rem; font-weight: 600; color: #ffffff;">Tek Oran</div>
+                <div style="font-size: 0.69rem; color: #94a3b8;">Tüm ürünleri için tek bir genel iskonto oranı geçerlidir</div>
+              </div>
+            </label>
+            <label class="brand-type-choice-label" style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.12); border-radius: 6px; cursor: pointer;">
+              <input type="radio" name="new-brand-type" value="tiered" style="margin-top: 3px;">
+              <div>
+                <div style="font-size: 0.8rem; font-weight: 600; color: #ffffff;">Kademeli (T1, T2...)</div>
+                <div style="font-size: 0.69rem; color: #94a3b8;">İmpo gibi ürün gruplarına göre farklı oranlar içerir</div>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group" id="group-new-brand-single-rate">
+          <label for="input-new-brand-rate" style="font-size: 0.78rem; font-weight: 600; color: #cbd5e1; margin-bottom: 4px; display: block;">Başlangıç Alış İskonto Oranı (%):</label>
+          <div style="position: relative; max-width: 160px;">
+            <input type="number" step="0.1" min="0" max="100" id="input-new-brand-rate" class="form-control" value="40" style="padding-right: 28px; font-weight: 700; font-size: 0.95rem; color: #fbbf24;">
+            <span style="position: absolute; right: 10px; top: 7px; color: #94a3b8; font-weight: 700;">%</span>
+          </div>
+        </div>
+
+        <div class="form-group" id="group-new-brand-tiered-hint" style="display: none;">
+          <div style="padding: 10px; background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.2); border-radius: 6px; font-size: 0.74rem; color: #38bdf8;">
+            Marka oluşturulduktan sonra varsayılan olarak <strong>Kademe 1</strong> ve <strong>Kademe 2</strong> atanacak, ardından dilediğiniz kadar kademe ekleyip oranlarını belirleyebilirsiniz.
+          </div>
+        </div>
+      </div>
+
+      <!-- Alt Çubuk -->
+      <div class="modal-footer" style="display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 12px 18px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <button type="button" class="btn btn-dark" id="btn-cancel-add-brand" style="padding: 0.5rem 1.2rem;">İptal</button>
+        <button type="button" class="btn" id="btn-submit-add-brand" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 600; padding: 0.5rem 1.4rem; border: none; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+          Markayı Ekle
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 9: Cari / Müşteri Rehberi Modalı (Customer Directory)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-customers-directory" style="z-index: 100060;">
+    <div class="modal-box" style="max-width: 1180px; width: 96%; max-height: 90vh; display: flex; flex-direction: column; padding: 0; overflow: hidden; background: #1a1a24; border: 1px solid rgba(0, 229, 255, 0.35); box-shadow: 0 20px 60px rgba(0,0,0,0.8), 0 0 25px rgba(0, 229, 255, 0.15);">
+      <!-- Modal Başlık -->
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 14px 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg, #00d2ff, #0077ff); display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0, 210, 255, 0.3);">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#fff" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <div>
+            <div class="modal-title" style="color: #00e5ff; font-size: 1.05rem; font-weight: 700;">Cari / Müşteri Rehberi</div>
+            <div style="font-size: 0.72rem; color: #94a3b8;">Kayıtlı firmalar, yetkililer, iletişim bilgileri ve geçmiş teklifler</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn btn-sm" id="btn-sync-customers-from-quotes" style="background: rgba(0, 229, 255, 0.12); border: 1px solid rgba(0, 229, 255, 0.4); color: var(--accent-cyan); font-weight: 600; font-size: 0.78rem; display: flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 6px; cursor: pointer;" title="Tüm geçmiş teklifleri tarayarak eksik carileri rehbere ekler ve teklif sayılarını eşitler">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+            <span>Tekliflerden Eşitle</span>
+          </button>
+          <button type="button" class="btn btn-sm" id="btn-toggle-add-customer-form" style="background: linear-gradient(135deg, #10b981, #059669); color: #fff; font-weight: 600; font-size: 0.78rem; display: flex; align-items: center; gap: 5px; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span id="txt-toggle-add-customer">Yeni Cari Ekle</span>
+          </button>
+          <button type="button" class="btn-remove-item" id="btn-close-customers-directory" style="font-size: 1.4rem;">&times;</button>
+        </div>
+      </div>
+
+      <!-- Arama ve Sayaç Çubuğu -->
+      <div style="padding: 12px 20px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255,255,255,0.06); display: flex; gap: 12px; align-items: center;">
+        <div style="position: relative; flex: 1;">
+          <input type="text" id="input-search-customers" class="form-control" placeholder="Firma Adı, Vergi Dairesi, VKN, İlgili Kişi, Telefon veya Şehir ara..." style="width: 100%; box-sizing: border-box; font-size: 0.85rem; padding-left: 34px;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#718096" stroke-width="2" style="position: absolute; left: 11px; top: 10px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div style="font-size: 0.8rem; color: #a0aec0; white-space: nowrap; background: rgba(255,255,255,0.05); padding: 6px 12px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.08);">
+          Kayıtlı Cari: <strong style="color: var(--accent-cyan);" id="customers-total-count">0</strong>
+        </div>
+      </div>
+
+      <!-- Yeni Cari Ekleme / Düzenleme Formu (Akordiyon) -->
+      <div id="customer-form-accordion" style="display: none; padding: 14px 20px; background: #161822; border-bottom: 2px solid var(--accent-cyan); box-shadow: inset 0 2px 8px rgba(0,0,0,0.4);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <strong style="color: var(--accent-cyan); font-size: 0.88rem; display: flex; align-items: center; gap: 6px;">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span id="customer-form-title">Yeni Cari Kartı Oluştur</span>
+          </strong>
+          <small style="color: #94a3b8; font-size: 0.72rem;">* <strong>Firma Adı</strong> zorunludur (Vergi Dairesi, VKN ve İlgili Kişi opsiyoneldir)</small>
+        </div>
+        
+        <input type="hidden" id="cust-form-edit-id" value="">
+
+        <!-- Firma Adı & İlgili Kişi -->
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Firma Adı (To) *:</label>
+            <input type="text" id="cust-form-name" class="form-control" placeholder="Örn: ISKELE SHIPPING TRADING LTD.STI." style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">İlgili Kişi (Attention):</label>
+            <input type="text" id="cust-form-attention" class="form-control" placeholder="Örn: Hakan Tuncan" style="font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <!-- Vergi Dairesi & Vergi No / VKN -->
+        <div style="display: grid; grid-template-columns: 1.2fr 1.2fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px; color: var(--accent-cyan);">🏛️ Vergi Dairesi:</label>
+            <input type="text" id="cust-form-tax-office" class="form-control" placeholder="Örn: Kartal Vergi Dairesi" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px; color: var(--accent-cyan);">🔢 Vergi No / VKN / TC:</label>
+            <input type="text" id="cust-form-tax-number" class="form-control" placeholder="Örn: 6440552145" style="font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Telefon:</label>
+            <input type="text" id="cust-form-tel" class="form-control" placeholder="Örn: 0533 499 5162" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">E-Posta:</label>
+            <input type="email" id="cust-form-email" class="form-control" placeholder="Örn: info@iskeleye.com" style="font-size: 0.85rem;">
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Sektör:</label>
+            <input type="text" id="cust-form-industry" class="form-control" placeholder="Örn: Denizcilik / Tersane" style="font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 10px;">
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Adres:</label>
+            <textarea id="cust-form-address" class="form-control" rows="2" placeholder="Örn: Cumhuriyet mah. Tercan sok. No:16/A Kartal/İST" style="font-size: 0.82rem; resize: vertical;"></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label class="form-label" style="font-size: 0.75rem; margin-bottom: 3px;">Son Kullanıcı:</label>
+            <input type="text" id="cust-form-enduser" class="form-control" placeholder="Örn: Gemi İşletmesi" style="font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <!-- Geçmiş Tekliflere Geriye Dönük Eşitleme Seçeneği -->
+        <div style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; color: #a0aec0; margin-bottom: 12px; background: rgba(0, 229, 255, 0.05); padding: 6px 10px; border-radius: 4px; border: 1px dashed rgba(0, 229, 255, 0.2);">
+          <input type="checkbox" id="cust-form-sync-quotes" checked style="accent-color: var(--accent-cyan); cursor: pointer; width: 15px; height: 15px;">
+          <label for="cust-form-sync-quotes" style="cursor: pointer; margin: 0; color: #cbd5e1;">Bu firmanın tüm geçmiş tekliflerindeki vergi dairesi ve VKN bilgilerini de geriye dönük güncelle</label>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 8px;">
+          <button type="button" class="btn btn-sm btn-dark" id="btn-cancel-customer-form">Vazgeç</button>
+          <button type="button" class="btn btn-sm" id="btn-save-customer-form" style="background: linear-gradient(135deg, #10b981, #059669); color: white; font-weight: 600; border: none; padding: 6px 14px; border-radius: 5px; cursor: pointer;">
+            Cariyi Kaydet
+          </button>
+        </div>
+      </div>
+
+      <!-- Cari Listesi Tablosu -->
+      <div style="flex: 1; overflow-y: auto; overflow-x: hidden !important; padding: 8px 16px 16px 16px; min-height: 250px; width: 100%; box-sizing: border-box;">
+        <table style="width: 100% !important; table-layout: fixed !important; border-collapse: collapse; font-size: 0.80rem; text-align: left; color: #e2e8f0;">
+          <thead style="background: #232530; position: sticky; top: 0; z-index: 2;">
+            <tr>
+              <th style="padding: 10px 8px; border-bottom: 2px solid #33384a; width: 31%;">Firma Adı & Vergi Bilgileri</th>
+              <th style="padding: 10px 8px; border-bottom: 2px solid #33384a; width: 16%;">İlgili Kişi (Attention)</th>
+              <th style="padding: 10px 8px; border-bottom: 2px solid #33384a; width: 14%;">Telefon</th>
+              <th style="padding: 10px 8px; border-bottom: 2px solid #33384a; width: 18%;">E-Posta</th>
+              <th style="padding: 10px 6px; border-bottom: 2px solid #33384a; width: 6%; text-align: center;">Teklif</th>
+              <th style="padding: 10px 8px; border-bottom: 2px solid #33384a; width: 15%; text-align: right;">İşlemler</th>
+            </tr>
+          </thead>
+          <tbody id="customers-table-body">
+            <!-- Dinamik Satırlar -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Alt Çubuk -->
+      <div class="modal-footer" style="padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.08); background: rgba(0,0,0,0.15);">
+        <div style="font-size: 0.75rem; color: #718096;">
+          İpucu: Teklif hazırlarken <strong>To:</strong> kutusuna yazmaya başladığınızda tüm bu cariler otomatik olarak önerilir.
+        </div>
+        <button type="button" class="btn btn-sm btn-dark" id="btn-close-customers-footer">Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sağ Alt Bildirim Konteyneri -->
+  <div id="floating-desktop-notif-container" class="floating-desktop-notif-container"></div>
+
+  <!-- Firebase SDK (Compat Modu) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  
+  <!-- Javascript -->
+  <script src="js/app.js"></script>
+</body>
+</html>
+

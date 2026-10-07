@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="ortekSondajGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00b4d8"/>
+      <stop offset="50%" stop-color="#0077b6"/>
+      <stop offset="100%" stop-color="#023e8a"/>
+    </linearGradient>
+    <filter id="wellShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Arka Plan Yuvarlak Kutu (Ortek Mavisi/Cyan Gradyan) -->
+  <rect width="100" height="100" rx="22" fill="url(#ortekSondajGrad)"/>
+
+  <!-- Zarif Çapraz Gölge Efekti -->
+  <path d="M0 40 Q 50 55 100 75 L 100 100 L 0 100 Z" fill="rgba(0, 0, 0, 0.12)"/>
+
+  <!-- Su Kuyusu Çizimi (Beyaz İkon) -->
+  <g fill="#ffffff" filter="url(#wellShadow)">
+    <!-- Sol Direk -->
+    <rect x="34" y="21" width="4.5" height="34" rx="2.25"/>
+    
+    <!-- Sağ Direk -->
+    <rect x="65.5" y="21" width="4.5" height="34" rx="2.25"/>
+
+    <!-- Üst Makara / Kütük -->
+    <rect x="40" y="22.5" width="24" height="8" rx="4"/>
+
+    <!-- Kova İpi -->
+    <rect x="51" y="30.5" width="2" height="5"/>
+
+    <!-- Kova Sapı & Kova -->
+    <path d="M46 36.5 C46 32.5 58 32.5 58 36.5 L56 49 C55.8 50.5 54.5 51.5 53 51.5 L51 51.5 C49.5 51.5 48.2 50.5 48 49 Z"/>
+
+    <!-- Sol Çıkrık Kolu (Krank) -->
+    <path d="M34 26.5 L28 26.5 A 2 2 0 0 0 26 28.5 L26 35.5 A 2 2 0 0 1 24 37.5 L22.5 37.5 A 1.5 1.5 0 0 0 21 39 L21 40 A 1.5 1.5 0 0 0 22.5 41.5 L24 41.5 A 5 5 0 0 0 29 36.5 L29 29.5 L34 29.5 Z"/>
+
+    <!-- Kuyu Alt Gövdesi (Tuğla Desenli Duvar) -->
+    <!-- Dış Gövde -->
+    <rect x="29" y="50" width="46" height="30" rx="7"/>
+  </g>
+
+  <!-- Tuğla Derzleri (Mavi Boşluklar) -->
+  <g fill="#0077b6">
+    <!-- Yatay Derz 1 -->
+    <rect x="34" y="59" width="36" height="2.2" rx="0.5"/>
+    <!-- Yatay Derz 2 -->
+    <rect x="34" y="69" width="36" height="2.2" rx="0.5"/>
+
+    <!-- 1. Sıra Dikey Derzler -->
+    <rect x="44.5" y="52" width="2.2" height="7" rx="0.5"/>
+    <rect x="57.5" y="52" width="2.2" height="7" rx="0.5"/>
+
+    <!-- 2. Sıra Dikey Derzler -->
+    <rect x="38" y="61.2" width="2.2" height="7.8" rx="0.5"/>
+    <rect x="51" y="61.2" width="2.2" height="7.8" rx="0.5"/>
+    <rect x="64" y="61.2" width="2.2" height="7.8" rx="0.5"/>
+
+    <!-- 3. Sıra Dikey Derzler -->
+    <rect x="44.5" y="71.2" width="2.2" height="6.8" rx="0.5"/>
+    <rect x="57.5" y="71.2" width="2.2" height="6.8" rx="0.5"/>
+  </g>
+</svg>

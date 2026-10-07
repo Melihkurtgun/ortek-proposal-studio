@@ -1,0 +1,80 @@
+{
+  "name": "ortek-proposal-studio",
+  "version": "1.0.90",
+  "description": "Ortek Proposal Studio",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:mac": "electron-builder --mac",
+    "publish": "electron-builder --win -p always",
+    "publish:mac": "electron-builder --mac -p always",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "author": "Melih Kurtgün",
+  "license": "ISC",
+  "dependencies": {
+    "electron-updater": "^6.1.8"
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1"
+  },
+  "allowScripts": {
+    "electron": true,
+    "electron-builder": true
+  },
+  "build": {
+    "appId": "com.ortek.proposalstudio",
+    "productName": "Ortek Proposal Studio",
+    "win": {
+      "target": "nsis",
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "runAfterFinish": true
+    },
+    "mac": {
+      "category": "public.app-category.business",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "icon.png",
+      "gatekeeperAssess": false,
+      "hardenedRuntime": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "Melihkurtgun",
+        "repo": "ortek-proposal-studio",
+        "releaseType": "release"
+      }
+    ],
+    "files": [
+      "**/*",
+      "!Teklifler",
+      "!Teklifler/**/*",
+      "!Kurulum.bat",
+      "!Baslat.bat",
+      "!server.js"
+    ]
+  }
+}
