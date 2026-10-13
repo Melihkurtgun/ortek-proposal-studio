@@ -615,6 +615,254 @@ textarea.form-control {
   cursor: pointer;
 }
 
+/* ==========================================================================
+   Hızlı Şablonlar Çubuğu (Templates Action Deck)
+   ========================================================================== */
+.templates-action-deck {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.45rem 0.65rem;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.templates-deck-header {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.templates-deck-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.templates-deck-label svg {
+  color: var(--accent-amber);
+}
+
+.templates-deck-buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+.btn-template-chip {
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+}
+
+.btn-template-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+}
+
+.btn-template-chip:active {
+  transform: translateY(0);
+}
+
+.btn-template-sondaj {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.35), rgba(3, 105, 161, 0.55));
+  border-color: rgba(56, 189, 248, 0.45);
+  color: #e0f2fe;
+}
+
+.btn-template-sondaj:hover {
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.55), rgba(3, 105, 161, 0.75));
+  border-color: #38bdf8;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
+}
+
+.btn-template-hidrofor {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.35), rgba(15, 118, 110, 0.55));
+  border-color: rgba(45, 212, 191, 0.45);
+  color: #ccfbf1;
+}
+
+.btn-template-hidrofor:hover {
+  background: linear-gradient(135deg, rgba(13, 148, 136, 0.55), rgba(15, 118, 110, 0.75));
+  border-color: #2dd4bf;
+  box-shadow: 0 0 12px rgba(45, 212, 191, 0.3);
+}
+
+.template-chip-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.template-chip-title {
+  letter-spacing: 0.2px;
+}
+
+.template-chip-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+}
+
+.btn-template-sondaj .template-chip-badge {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
+.btn-template-hidrofor .template-chip-badge {
+  color: #5eead4;
+  border-color: rgba(45, 212, 191, 0.3);
+}
+
+/* ==========================================================================
+   Şablon Seçim Modalları (Checklist & Item Cards)
+   ========================================================================== */
+.template-checklist-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.template-item-check-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.template-item-check-card:hover {
+  background: rgba(30, 41, 59, 0.8);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.template-item-check-card.active {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+#modal-confirm-hidrofor .template-item-check-card.active {
+  background: rgba(13, 148, 136, 0.12);
+  border-color: rgba(45, 212, 191, 0.4);
+}
+
+.template-item-check-card:not(.active) {
+  opacity: 0.55;
+  background: rgba(0, 0, 0, 0.25);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+.template-item-num {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  width: 16px;
+  text-align: center;
+}
+
+.template-item-check-card.active .template-item-num {
+  color: #38bdf8;
+}
+
+#modal-confirm-hidrofor .template-item-check-card.active .template-item-num {
+  color: #2dd4bf;
+}
+
+.template-item-title {
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.template-item-unit {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1px 5px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+.template-item-unit.highlight {
+  color: #38bdf8;
+  font-weight: 600;
+}
+
+.template-counter-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 2px 7px;
+  border-radius: 4px;
+}
+
+.template-counter-badge.hidrofor-badge {
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.12);
+  border-color: rgba(45, 212, 191, 0.35);
+}
+
+.btn-text-action {
+  background: transparent;
+  border: none;
+  color: #38bdf8;
+  font-size: 0.73rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  transition: color 0.15s ease;
+}
+
+.btn-text-action:hover {
+  color: #7dd3fc;
+}
+
+#modal-confirm-hidrofor .btn-text-action {
+  color: #2dd4bf;
+}
+
+#modal-confirm-hidrofor .btn-text-action:hover {
+  color: #99f6e4;
+}
+
 /* Proje Özel Fiyat Kutusu (Sondaj ve Kart ile Uyumlu Taslak) */
 .package-price-box {
   background: linear-gradient(135deg, rgba(0, 119, 182, 0.12), rgba(15, 23, 42, 0.65));

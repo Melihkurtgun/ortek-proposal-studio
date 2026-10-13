@@ -384,24 +384,42 @@
 
         <!-- 4. KART: Teklif Kalemleri (Sayfa 2 Ürün Tablosu + Dinamik Ekstra Özellikler - Şeffaf Placeholder'lı) -->
         <section class="panel-card">
-          <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
             <span class="panel-title">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
               4. Teklif Kalemleri (Sayfa 2)
             </span>
-            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <button type="button" class="btn" id="btn-template-sondaj" title="8 kalemlik standart Sondaj Teklifi ürün başlıklarını otomatik yükler" style="background: linear-gradient(135deg, #0077b6, #0096c7); color: #ffffff; font-size: 0.74rem; font-weight: 600; padding: 4px 10px; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(255, 255, 255, 0.2); box-shadow: 0 2px 5px rgba(0,0,0,0.25); cursor: pointer; transition: all 0.2s ease;">
-                <img src="assets/sondaj-well.svg" width="16" height="16" style="border-radius: 3px; display: inline-block; vertical-align: middle;" alt="">
-                <span>Sondaj Teklifi</span>
-              </button>
-              <select id="select-currency" class="form-control" style="padding: 0.25rem 0.55rem; font-size: 0.78rem; width: auto; font-weight: 600;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <select id="select-currency" class="form-control" style="padding: 0.28rem 0.65rem; font-size: 0.78rem; width: auto; font-weight: 600; height: 30px; border-radius: 6px; background: rgba(14, 21, 36, 0.9); border-color: rgba(56, 189, 248, 0.35); color: #f1f5f9;">
                 <option value="EUR">Euro (EUR €)</option>
                 <option value="USD">USD ($)</option>
                 <option value="TL">Türk Lirası (TL ₺)</option>
               </select>
-              <button type="button" class="btn btn-dark" id="btn-open-brand-discounts" title="Marka Alış İskonto Oranlarını Görüntüle ve Güncelle" style="padding: 4px 10px; font-size: 0.74rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-radius: 6px; cursor: pointer; transition: all 0.2s ease;">
+              <button type="button" class="btn btn-dark" id="btn-open-brand-discounts" title="Marka Alış İskonto Oranlarını Görüntüle ve Güncelle" style="height: 30px; padding: 0 10px; font-size: 0.74rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
                 <span>İskonto Oranları</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hızlı Şablonlar Çubuğu (Sondaj & Hidrofor Paketleri) -->
+          <div class="templates-action-deck">
+            <div class="templates-deck-header">
+              <span class="templates-deck-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>Hızlı Şablonlar:</span>
+              </span>
+            </div>
+            <div class="templates-deck-buttons">
+              <button type="button" class="btn-template-chip btn-template-sondaj" id="btn-template-sondaj" title="Kuyu & Dalgıç Şablonu (Seçilebilir 8 Kalem)">
+                <span class="template-chip-icon">🌊</span>
+                <span class="template-chip-title">Sondaj Teklifi</span>
+                <span class="template-chip-badge">8 Kalem</span>
+              </button>
+              <button type="button" class="btn-template-chip btn-template-hidrofor" id="btn-template-hidrofor" title="Hidrofor Paketi Şablonu (Seçilebilir Maks. 8 Kalem)">
+                <span class="template-chip-icon">💧</span>
+                <span class="template-chip-title">Hidrofor Paketi</span>
+                <span class="template-chip-badge">Maks. 8 Kalem</span>
               </button>
             </div>
           </div>
@@ -1317,10 +1335,10 @@
   </div>
 
   <!-- ==========================================================================
-       MODAL 10: Standart Sondaj Teklifi Şablon Onay Modalı (Ortek Cyan/Dark Tema)
+       MODAL 10: Standart Sondaj Teklifi Şablon Onay Modalı (Seçilebilir 8 Kalem)
        ========================================================================== -->
   <div class="modal-overlay" id="modal-confirm-sondaj" style="z-index: 100035;">
-    <div class="modal-box" style="max-width: 500px; border: 1px solid rgba(0, 180, 216, 0.45); box-shadow: 0 12px 45px rgba(0,0,0,0.85), 0 0 25px rgba(0, 180, 216, 0.2);">
+    <div class="modal-box" style="max-width: 540px; border: 1px solid rgba(0, 180, 216, 0.45); box-shadow: 0 12px 45px rgba(0,0,0,0.85), 0 0 25px rgba(0, 180, 216, 0.2);">
       <div class="modal-header">
         <div style="display: flex; align-items: center; gap: 12px;">
           <img src="assets/sondaj-well.svg" width="38" height="38" style="border-radius: 9px; box-shadow: 0 3px 12px rgba(0, 180, 216, 0.35); flex-shrink: 0; display: block;" alt="Sondaj Kuyusu">
@@ -1333,27 +1351,73 @@
       </div>
 
       <div class="modal-body" style="padding: 1.2rem 1.4rem;">
-        <div id="sondaj-modal-warning" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #fbbf24; line-height: 1.45;">
+        <div id="sondaj-modal-warning" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #fbbf24; line-height: 1.45; margin-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 3px;">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
             <span id="sondaj-modal-warning-title">Mevcut Kalemler Temizlenecektir!</span>
           </div>
-          <span id="sondaj-modal-warning-desc">Şu anda girdiğiniz ürün ve fiyat verileri silinerek yerine 8 standart sondaj kalemi yüklenecektir.</span>
+          <span id="sondaj-modal-warning-desc">Şu anda girdiğiniz ürün ve fiyat verileri yerine seçilen sondaj kalemleri yüklenecektir.</span>
         </div>
 
-        <p style="font-size: 0.86rem; color: #cbd5e1; line-height: 1.5; margin: 0;" id="sondaj-modal-desc">
-          Aşağıdaki 8 kalem hazır başlık ve birim ayarlarıyla teklifinize eklenecektir:
-        </p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 0.82rem; color: #cbd5e1; font-weight: 600;" id="sondaj-modal-desc">Teklife eklenecek kalemleri seçin:</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="template-counter-badge" id="sondaj-counter-badge">Seçili: 8 / 8 Kalem</span>
+            <button type="button" class="btn-text-action" id="btn-sondaj-select-all">Tümü</button>
+            <span style="color: #475569; font-size: 0.75rem;">|</span>
+            <button type="button" class="btn-text-action" id="btn-sondaj-deselect-all">Temizle</button>
+          </div>
+        </div>
 
-        <div id="sondaj-modal-items-preview" style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 8px; padding: 10px 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 14px; font-size: 0.79rem;">
-          <div style="color: #fff;">1. Dalgıç Motor <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">2. Dalgıç Pompa <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">3. Elektrik Kablosu <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">4. Kontrol Panosu <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">5. Kuyu Akıtma Başlığı <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">6. Paslanmaz Klemens <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">7. İzoleli Çelik Halat <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">8. Üst Kolon Adaptörü <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
+        <div id="sondaj-modal-items-preview" class="template-checklist-grid">
+          <label class="template-item-check-card active" data-index="0">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="0" checked>
+            <span class="template-item-num">1</span>
+            <span class="template-item-title">Dalgıç Motor</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="1">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="1" checked>
+            <span class="template-item-num">2</span>
+            <span class="template-item-title">Dalgıç Pompa</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="2">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="2" checked>
+            <span class="template-item-num">3</span>
+            <span class="template-item-title">Elektrik Kablosu</span>
+            <span class="template-item-unit highlight">Metre</span>
+          </label>
+          <label class="template-item-check-card active" data-index="3">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="3" checked>
+            <span class="template-item-num">4</span>
+            <span class="template-item-title">Kontrol Panosu</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="4">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="4" checked>
+            <span class="template-item-num">5</span>
+            <span class="template-item-title">Kuyu Akıtma Başlığı (Vanalı)</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="5">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="5" checked>
+            <span class="template-item-num">6</span>
+            <span class="template-item-title">Paslanmaz Klemens (Halat İçin)</span>
+            <span class="template-item-unit highlight">Metre</span>
+          </label>
+          <label class="template-item-check-card active" data-index="6">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="6" checked>
+            <span class="template-item-num">7</span>
+            <span class="template-item-title">İzoleli Çelik Halat</span>
+            <span class="template-item-unit highlight">Metre</span>
+          </label>
+          <label class="template-item-check-card active" data-index="7">
+            <input type="checkbox" class="sondaj-item-checkbox custom-checkbox" data-index="7" checked>
+            <span class="template-item-num">8</span>
+            <span class="template-item-title">Üst Kolon Boru Adaptörü</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
         </div>
       </div>
 
@@ -1366,7 +1430,110 @@
           </button>
           <button type="button" class="btn" id="btn-confirm-sondaj-apply" style="background: linear-gradient(135deg, #0077b6, #0096c7); color: #fff; font-weight: 600; padding: 0.5rem 1.3rem; border: none; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 3px 8px rgba(0, 150, 199, 0.35);">
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span id="sondaj-modal-submit-text">Şablonu Yükle</span>
+            <span id="sondaj-modal-submit-text">Seçilen Kalemleri Yükle (8 Kalem)</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL 10B: Standart Hidrofor Paketi Şablon Onay Modalı (Seçilebilir 8 Kalem)
+       ========================================================================== -->
+  <div class="modal-overlay" id="modal-confirm-hidrofor" style="z-index: 100036;">
+    <div class="modal-box" style="max-width: 540px; border: 1px solid rgba(13, 148, 136, 0.45); box-shadow: 0 12px 45px rgba(0,0,0,0.85), 0 0 25px rgba(13, 148, 136, 0.2);">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="width: 38px; height: 38px; border-radius: 9px; background: linear-gradient(135deg, #0d9488, #0f766e); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; box-shadow: 0 3px 12px rgba(13, 148, 136, 0.35); flex-shrink: 0;">💧</div>
+          <div>
+            <span class="modal-title" style="color: #2dd4bf; font-size: 1.05rem;" id="hidrofor-modal-title">Hidrofor Paketi Şablonu</span>
+            <div style="font-size: 0.74rem; color: #99f6e4; margin-top: 2px;" id="hidrofor-modal-subtitle">Maksimum 8 Kalemlik Standart Paket — Müşteride mevcut olanları çıkarabilirsiniz</div>
+          </div>
+        </div>
+        <button type="button" class="btn-remove-item" id="btn-close-hidrofor-modal" style="font-size: 1.3rem;">&times;</button>
+      </div>
+
+      <div class="modal-body" style="padding: 1.2rem 1.4rem;">
+        <div id="hidrofor-modal-warning" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.35); border-radius: 8px; padding: 10px 14px; font-size: 0.82rem; color: #fbbf24; line-height: 1.45; margin-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 6px; font-weight: 600; margin-bottom: 3px;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="hidrofor-modal-warning-title">Mevcut Kalemler Temizlenecektir!</span>
+          </div>
+          <span id="hidrofor-modal-warning-desc">Şu anda girdiğiniz ürün ve fiyat verileri yerine seçilen hidrofor paketi kalemleri yüklenecektir.</span>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+          <span style="font-size: 0.82rem; color: #cbd5e1; font-weight: 600;" id="hidrofor-modal-desc">Teklife eklenecek kalemleri seçin:</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="template-counter-badge hidrofor-badge" id="hidrofor-counter-badge">Seçili: 8 / 8 Kalem</span>
+            <button type="button" class="btn-text-action" id="btn-hidrofor-select-all">Tümü</button>
+            <span style="color: #475569; font-size: 0.75rem;">|</span>
+            <button type="button" class="btn-text-action" id="btn-hidrofor-deselect-all">Temizle</button>
+          </div>
+        </div>
+
+        <div id="hidrofor-modal-items-preview" class="template-checklist-grid">
+          <label class="template-item-check-card active" data-index="0">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="0" checked>
+            <span class="template-item-num">1</span>
+            <span class="template-item-title">Hidrofor Pompası</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="1">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="1" checked>
+            <span class="template-item-num">2</span>
+            <span class="template-item-title">Elektrik Panosu</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="2">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="2" checked>
+            <span class="template-item-num">3</span>
+            <span class="template-item-title">Genleşme Tankı</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="3">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="3" checked>
+            <span class="template-item-num">4</span>
+            <span class="template-item-title">Beş Yollu Bağlantı Aparatı</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="4">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="4" checked>
+            <span class="template-item-num">5</span>
+            <span class="template-item-title">Manometre</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="5">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="5" checked>
+            <span class="template-item-num">6</span>
+            <span class="template-item-title">Basınç Şalteri</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="6">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="6" checked>
+            <span class="template-item-num">7</span>
+            <span class="template-item-title">Flex Hortum</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+          <label class="template-item-check-card active" data-index="7">
+            <input type="checkbox" class="hidrofor-item-checkbox custom-checkbox" data-index="7" checked>
+            <span class="template-item-num">8</span>
+            <span class="template-item-title">Flatör</span>
+            <span class="template-item-unit">Adet</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+        <button type="button" class="btn btn-dark" id="btn-cancel-hidrofor" style="padding: 0.5rem 1.2rem;">Vazgeç</button>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="btn" id="btn-clear-hidrofor" title="Hidrofor şablonunu silip teklifi orijinal haline geri döndürür" style="background: rgba(231, 76, 60, 0.15); border: 1px solid rgba(231, 76, 60, 0.45); color: #ff6b6b; font-weight: 600; padding: 0.5rem 1.1rem; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; transition: all 0.2s ease;">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span id="hidrofor-modal-clear-text">Şablonu Sil</span>
+          </button>
+          <button type="button" class="btn" id="btn-confirm-hidrofor-apply" style="background: linear-gradient(135deg, #0d9488, #0f766e); color: #fff; font-weight: 600; padding: 0.5rem 1.3rem; border: none; border-radius: 6px; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 3px 8px rgba(13, 148, 136, 0.35);">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="hidrofor-modal-submit-text">Seçilen Kalemleri Yükle (8 Kalem)</span>
           </button>
         </div>
       </div>

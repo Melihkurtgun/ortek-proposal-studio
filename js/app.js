@@ -480,6 +480,7 @@ class QuotationApp {
     this.itemsContainer = document.getElementById('items-container');
     this.btnAddItem = document.getElementById('btn-add-item');
     this.btnTemplateSondaj = document.getElementById('btn-template-sondaj');
+    this.btnTemplateHidrofor = document.getElementById('btn-template-hidrofor');
 
     this.summarySubtotal = document.getElementById('summary-subtotal');
     this.summaryVat = document.getElementById('summary-vat');
@@ -594,6 +595,23 @@ class QuotationApp {
     this.btnClearSondaj = document.getElementById('btn-clear-sondaj');
     this.btnConfirmSondajApply = document.getElementById('btn-confirm-sondaj-apply');
     this.sondajModalWarning = document.getElementById('sondaj-modal-warning');
+    this.sondajCounterBadge = document.getElementById('sondaj-counter-badge');
+    this.btnSondajSelectAll = document.getElementById('btn-sondaj-select-all');
+    this.btnSondajDeselectAll = document.getElementById('btn-sondaj-deselect-all');
+    this.sondajModalSubmitText = document.getElementById('sondaj-modal-submit-text');
+
+    // Hidrofor Paketi Şablon Modalı
+    this.modalConfirmHidrofor = document.getElementById('modal-confirm-hidrofor');
+    this.btnCloseHidroforModal = document.getElementById('btn-close-hidrofor-modal');
+    this.btnCancelHidrofor = document.getElementById('btn-cancel-hidrofor');
+    this.btnClearHidrofor = document.getElementById('btn-clear-hidrofor');
+    this.btnConfirmHidroforApply = document.getElementById('btn-confirm-hidrofor-apply');
+    this.hidroforModalWarning = document.getElementById('hidrofor-modal-warning');
+    this.hidroforCounterBadge = document.getElementById('hidrofor-counter-badge');
+    this.btnHidroforSelectAll = document.getElementById('btn-hidrofor-select-all');
+    this.btnHidroforDeselectAll = document.getElementById('btn-hidrofor-deselect-all');
+    this.hidroforModalSubmitText = document.getElementById('hidrofor-modal-submit-text');
+
     this.previousItemsBeforeTemplate = null;
     this.setupSecurityPin = document.getElementById('setup-security-pin');
     this.settingSecurityPin = document.getElementById('setting-security-pin');
@@ -1045,15 +1063,7 @@ class QuotationApp {
             }
           }
 
-          if (this.btnTemplateSondaj) {
-            const span = this.btnTemplateSondaj.querySelector('span');
-            if (span) {
-              span.textContent = (this.state.language === 'en') ? '🌊 Drilling Proposal' : '🌊 Sondaj Teklifi';
-            }
-            this.btnTemplateSondaj.title = (this.state.language === 'en')
-              ? 'Automatically loads 8 standard Drilling Proposal item titles'
-              : '8 kalemlik standart Sondaj Teklifi ürün başlıklarını otomatik yükler';
-          }
+          this.updateTemplateButtonsLanguage();
 
           this.renderPreview();
           this.renderRemarks();
@@ -1170,6 +1180,13 @@ class QuotationApp {
     if (this.btnTemplateSondaj) {
       this.btnTemplateSondaj.addEventListener('click', () => {
         this.openSondajModal();
+      });
+    }
+
+    // Hidrofor Paketi Şablon Butonu
+    if (this.btnTemplateHidrofor) {
+      this.btnTemplateHidrofor.addEventListener('click', () => {
+        this.openHidroforModal();
       });
     }
 
@@ -1661,9 +1678,46 @@ class QuotationApp {
     }
     if (this.modalConfirmSondaj) {
       this.setupBackdropClose(this.modalConfirmSondaj, () => this.closeSondajModal());
+      const sondajCheckboxes = this.modalConfirmSondaj.querySelectorAll('.sondaj-item-checkbox');
+      sondajCheckboxes.forEach(cb => {
+        cb.addEventListener('change', () => this.updateSondajSelectionUI());
+      });
     }
     if (this.btnConfirmSondajApply) {
       this.btnConfirmSondajApply.addEventListener('click', () => this.executeSondajTemplate());
+    }
+    if (this.btnSondajSelectAll) {
+      this.btnSondajSelectAll.addEventListener('click', () => this.setSondajAllCheckboxes(true));
+    }
+    if (this.btnSondajDeselectAll) {
+      this.btnSondajDeselectAll.addEventListener('click', () => this.setSondajAllCheckboxes(false));
+    }
+
+    // Hidrofor Paketi Şablon Modalı Olayları
+    if (this.btnCloseHidroforModal) {
+      this.btnCloseHidroforModal.addEventListener('click', () => this.closeHidroforModal());
+    }
+    if (this.btnCancelHidrofor) {
+      this.btnCancelHidrofor.addEventListener('click', () => this.closeHidroforModal());
+    }
+    if (this.btnClearHidrofor) {
+      this.btnClearHidrofor.addEventListener('click', () => this.clearHidroforTemplate());
+    }
+    if (this.modalConfirmHidrofor) {
+      this.setupBackdropClose(this.modalConfirmHidrofor, () => this.closeHidroforModal());
+      const hidroforCheckboxes = this.modalConfirmHidrofor.querySelectorAll('.hidrofor-item-checkbox');
+      hidroforCheckboxes.forEach(cb => {
+        cb.addEventListener('change', () => this.updateHidroforSelectionUI());
+      });
+    }
+    if (this.btnConfirmHidroforApply) {
+      this.btnConfirmHidroforApply.addEventListener('click', () => this.executeHidroforTemplate());
+    }
+    if (this.btnHidroforSelectAll) {
+      this.btnHidroforSelectAll.addEventListener('click', () => this.setHidroforAllCheckboxes(true));
+    }
+    if (this.btnHidroforDeselectAll) {
+      this.btnHidroforDeselectAll.addEventListener('click', () => this.setHidroforAllCheckboxes(false));
     }
 
     // Marka Alış İskonto Oranları Olayları
@@ -1869,6 +1923,9 @@ class QuotationApp {
       if (e.key === 'Escape') {
         if (this.modalConfirmSondaj && this.modalConfirmSondaj.classList.contains('active')) {
           this.closeSondajModal();
+        }
+        if (this.modalConfirmHidrofor && this.modalConfirmHidrofor.classList.contains('active')) {
+          this.closeHidroforModal();
         }
       }
     });
@@ -4168,8 +4225,65 @@ class QuotationApp {
     this.renderPreview();
   }
 
+  // =========================================================================
+  // SONDAJ & HİDROFOR HIZLI ŞABLON YÖNETİMİ (SEÇİLEBİLİR KALEMLER)
+  // =========================================================================
+
+  updateTemplateButtonsLanguage() {
+    const isEn = (this.state.language === 'en');
+    if (this.btnTemplateSondaj) {
+      const titleSpan = this.btnTemplateSondaj.querySelector('.template-chip-title');
+      if (titleSpan) titleSpan.textContent = isEn ? 'Drilling Proposal' : 'Sondaj Teklifi';
+      const badgeSpan = this.btnTemplateSondaj.querySelector('.template-chip-badge');
+      if (badgeSpan) badgeSpan.textContent = isEn ? '8 Items' : '8 Kalem';
+      this.btnTemplateSondaj.title = isEn
+        ? 'Customizable standard Drilling Proposal (8 items)'
+        : 'Kuyu & Dalgıç Şablonu (Seçilebilir 8 Kalem)';
+    }
+
+    if (this.btnTemplateHidrofor) {
+      const titleSpan = this.btnTemplateHidrofor.querySelector('.template-chip-title');
+      if (titleSpan) titleSpan.textContent = isEn ? 'Booster Package' : 'Hidrofor Paketi';
+      const badgeSpan = this.btnTemplateHidrofor.querySelector('.template-chip-badge');
+      if (badgeSpan) badgeSpan.textContent = isEn ? 'Max 8 Items' : 'Maks. 8 Kalem';
+      this.btnTemplateHidrofor.title = isEn
+        ? 'Customizable standard Booster Package (Max 8 items)'
+        : 'Hidrofor Paketi Şablonu (Seçilebilir Maks. 8 Kalem)';
+    }
+  }
+
   applySondajTemplate() {
     this.openSondajModal();
+  }
+
+  applyHidroforTemplate() {
+    this.openHidroforModal();
+  }
+
+  getSondajTemplateData() {
+    return [
+      { tr: 'Dalgıç Motor', en: 'Submersible Motor', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Dalgıç Pompa', en: 'Submersible Pump', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Elektrik Kablosu', en: 'Submersible Power Cable', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'Kontrol Panosu', en: 'Control Panel', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Kuyu Akıtma Başlığı (Vanalı)', en: 'Wellhead (With Valve)', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Paslanmaz Klemens (Halat İçin)', en: 'Stainless Steel Clamp', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'İzoleli Çelik Halat', en: 'Insulated Steel Wire Rope', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'Üst Kolon Boru Adaptörü', en: 'Top Column Pipe Adapter', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false }
+    ];
+  }
+
+  getHidroforTemplateData() {
+    return [
+      { tr: 'Hidrofor Pompası', en: 'Booster Pump', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Elektrik Panosu', en: 'Electrical Control Panel', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Genleşme Tankı', en: 'Expansion Tank', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Beş Yollu Bağlantı Aparatı', en: '5-Way Fitting', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Manometre', en: 'Pressure Gauge', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Basınç Şalteri', en: 'Pressure Switch', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Flex Hortum', en: 'Flexible Hose', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Flatör', en: 'Float Switch', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false }
+    ];
   }
 
   openSondajModal() {
@@ -4193,55 +4307,39 @@ class QuotationApp {
       this.sondajModalWarning.style.display = hasFilled ? 'block' : 'none';
     }
 
-    // Modal içi metinleri seçili dile göre güncelle
+    // Modal başlıkları & metinleri
     const modalTitle = document.getElementById('sondaj-modal-title');
     const modalSubtitle = document.getElementById('sondaj-modal-subtitle');
     const modalWarningTitle = document.getElementById('sondaj-modal-warning-title');
     const modalWarningDesc = document.getElementById('sondaj-modal-warning-desc');
     const modalDesc = document.getElementById('sondaj-modal-desc');
-    const modalPreview = document.getElementById('sondaj-modal-items-preview');
     const btnCancel = document.getElementById('btn-cancel-sondaj');
     const btnClearText = document.getElementById('sondaj-modal-clear-text');
-    const btnSubmitText = document.getElementById('sondaj-modal-submit-text');
 
     if (modalTitle) modalTitle.textContent = isEn ? 'Drilling Proposal Template' : 'Sondaj Teklifi Şablonu';
-    if (modalSubtitle) modalSubtitle.textContent = isEn ? '8 Standard Submersible & Drilling Proposal Titles' : '8 Kalemlik Standart Dalgıç & Sondaj Başlıkları';
+    if (modalSubtitle) modalSubtitle.textContent = isEn ? 'Standard Submersible & Drilling Proposal — Select or exclude items' : 'Standart Dalgıç & Sondaj Kalemleri — Müşteride mevcut olanları çıkarabilirsiniz';
     if (modalWarningTitle) modalWarningTitle.textContent = isEn ? 'Existing Items Will Be Replaced!' : 'Mevcut Kalemler Temizlenecektir!';
-    if (modalWarningDesc) modalWarningDesc.textContent = isEn ? 'Current entered item details will be cleared and replaced with 8 standard drilling proposal items.' : 'Şu anda girdiğiniz ürün ve fiyat verileri silinerek yerine 8 standart sondaj kalemi yüklenecektir.';
-    if (modalDesc) modalDesc.textContent = isEn ? 'The following 8 items will be loaded into your proposal with preset titles and unit modes:' : 'Aşağıdaki 8 kalem hazır başlık ve birim ayarlarıyla teklifinize eklenecektir:';
+    if (modalWarningDesc) modalWarningDesc.textContent = isEn ? 'Current entered item details will be cleared and replaced with selected items.' : 'Şu anda girdiğiniz ürün ve fiyat verileri yerine seçilen sondaj kalemleri yüklenecektir.';
+    if (modalDesc) modalDesc.textContent = isEn ? 'Select items to load into quotation:' : 'Teklife eklenecek kalemleri seçin:';
     if (btnCancel) btnCancel.textContent = isEn ? 'Cancel' : 'Vazgeç';
     if (btnClearText) btnClearText.textContent = isEn ? 'Delete Template' : 'Şablonu Sil';
-    if (btnSubmitText) btnSubmitText.textContent = isEn ? 'Load Template' : 'Şablonu Yükle';
 
-    if (modalPreview) {
-      if (isEn) {
-        modalPreview.innerHTML = `
-          <div style="color: #fff;">1. Submersible Motor <span style="color: #888; font-size: 0.7rem;">(Pcs)</span></div>
-          <div style="color: #fff;">2. Submersible Pump <span style="color: #888; font-size: 0.7rem;">(Pcs)</span></div>
-          <div style="color: #fff;">3. Submersible Power Cable <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Meter)</span></div>
-          <div style="color: #fff;">4. Control Panel <span style="color: #888; font-size: 0.7rem;">(Pcs)</span></div>
-          <div style="color: #fff;">5. Wellhead (With Valve) <span style="color: #888; font-size: 0.7rem;">(Pcs)</span></div>
-          <div style="color: #fff;">6. Stainless Steel Clamp <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Meter)</span></div>
-          <div style="color: #fff;">7. Insulated Steel Wire Rope <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Meter)</span></div>
-          <div style="color: #fff;">8. Top Column Pipe Adapter <span style="color: #888; font-size: 0.7rem;">(Pcs)</span></div>
-        `;
-      } else {
-        modalPreview.innerHTML = `
-          <div style="color: #fff;">1. Dalgıç Motor <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">2. Dalgıç Pompa <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">3. Elektrik Kablosu <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">4. Kontrol Panosu <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">5. Kuyu Akıtma Başlığı <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-          <div style="color: #fff;">6. Paslanmaz Klemens <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">7. İzoleli Çelik Halat <span style="color: var(--accent-cyan); font-weight: 600; font-size: 0.7rem;">(Metre)</span></div>
-          <div style="color: #fff;">8. Üst Kolon Adaptörü <span style="color: #888; font-size: 0.7rem;">(Adet)</span></div>
-        `;
+    // Kalem kartlarının dil metinlerini güncelle
+    const sondajData = this.getSondajTemplateData();
+    const cards = this.modalConfirmSondaj.querySelectorAll('.template-item-check-card');
+    cards.forEach(card => {
+      const idx = parseInt(card.dataset.index, 10);
+      if (sondajData[idx]) {
+        const titleSpan = card.querySelector('.template-item-title');
+        const unitSpan = card.querySelector('.template-item-unit');
+        if (titleSpan) titleSpan.textContent = isEn ? sondajData[idx].en : sondajData[idx].tr;
+        if (unitSpan) unitSpan.textContent = isEn ? sondajData[idx].unitEn : sondajData[idx].unitTr;
       }
-    }
+    });
 
+    this.setSondajAllCheckboxes(true);
     this.modalConfirmSondaj.classList.add('active');
 
-    // Yanlışlıkla basmaya karşı: Varsayılan olarak Vazgeç butonu odaklanır
     setTimeout(() => {
       if (this.btnCancelSondaj) this.btnCancelSondaj.focus();
     }, 50);
@@ -4253,65 +4351,108 @@ class QuotationApp {
     }
   }
 
+  updateSondajSelectionUI() {
+    if (!this.modalConfirmSondaj) return;
+    const isEn = (this.state.language === 'en');
+    const checkboxes = Array.from(this.modalConfirmSondaj.querySelectorAll('.sondaj-item-checkbox'));
+    let checkedCount = 0;
+
+    checkboxes.forEach(cb => {
+      const card = cb.closest('.template-item-check-card');
+      if (card) {
+        card.classList.toggle('active', cb.checked);
+      }
+      if (cb.checked) checkedCount++;
+    });
+
+    if (this.sondajCounterBadge) {
+      this.sondajCounterBadge.textContent = isEn ? `Seçili: ${checkedCount} / 8 Kalem` : `Seçili: ${checkedCount} / 8 Kalem`;
+      if (isEn) this.sondajCounterBadge.textContent = `Selected: ${checkedCount} / 8 Items`;
+    }
+    if (this.sondajModalSubmitText) {
+      this.sondajModalSubmitText.textContent = isEn
+        ? `Load Selected Items (${checkedCount} Items)`
+        : `Seçilen Kalemleri Yükle (${checkedCount} Kalem)`;
+    }
+
+    if (this.btnConfirmSondajApply) {
+      if (checkedCount === 0) {
+        this.btnConfirmSondajApply.style.opacity = '0.5';
+        this.btnConfirmSondajApply.style.cursor = 'not-allowed';
+      } else {
+        this.btnConfirmSondajApply.style.opacity = '1';
+        this.btnConfirmSondajApply.style.cursor = 'pointer';
+      }
+    }
+  }
+
+  setSondajAllCheckboxes(state) {
+    if (!this.modalConfirmSondaj) return;
+    const checkboxes = this.modalConfirmSondaj.querySelectorAll('.sondaj-item-checkbox');
+    checkboxes.forEach(cb => {
+      cb.checked = !!state;
+    });
+    this.updateSondajSelectionUI();
+  }
+
   executeSondajTemplate() {
     const isEn = (this.state.language === 'en');
+    const sondajData = this.getSondajTemplateData();
+    let selectedIndices = [];
+
+    if (this.modalConfirmSondaj) {
+      const checkboxes = Array.from(this.modalConfirmSondaj.querySelectorAll('.sondaj-item-checkbox'));
+      selectedIndices = checkboxes.filter(cb => cb.checked).map(cb => parseInt(cb.dataset.index, 10));
+    } else {
+      selectedIndices = [0, 1, 2, 3, 4, 5, 6, 7];
+    }
+
+    if (selectedIndices.length === 0) {
+      this.showToast(isEn ? 'Please select at least 1 item to load.' : 'Lütfen teklife eklenecek en az 1 kalem seçin.', 'warning');
+      return;
+    }
 
     // Geri alma (Undo) için mevcut kalemleri yedekle
     this.previousItemsBeforeTemplate = JSON.parse(JSON.stringify(this.state.items || []));
 
-    const templateItems = isEn ? [
-      { title: 'Submersible Motor', isMeter: false, unitType: 'Pcs' },
-      { title: 'Submersible Pump', isMeter: false, unitType: 'Pcs' },
-      { title: 'Submersible Power Cable', isMeter: true, unitType: 'Meter' },
-      { title: 'Control Panel', isMeter: false, unitType: 'Pcs' },
-      { title: 'Wellhead (With Valve)', isMeter: false, unitType: 'Pcs' },
-      { title: 'Stainless Steel Clamp (For Rope)', isMeter: true, unitType: 'Meter' },
-      { title: 'Insulated Steel Wire Rope', isMeter: true, unitType: 'Meter' },
-      { title: 'Top Column Pipe Adapter', isMeter: false, unitType: 'Pcs' }
-    ] : [
-      { title: 'Dalgıç Motor', isMeter: false, unitType: 'Adet' },
-      { title: 'Dalgıç Pompa', isMeter: false, unitType: 'Adet' },
-      { title: 'Elektrik Kablosu', isMeter: true, unitType: 'Metre' },
-      { title: 'Kontrol Panosu', isMeter: false, unitType: 'Adet' },
-      { title: 'Kuyu Akıtma Başlığı (Vanalı)', isMeter: false, unitType: 'Adet' },
-      { title: 'Paslanmaz Klemens (Halat İçin)', isMeter: true, unitType: 'Metre' },
-      { title: 'İzoleli Çelik Halat', isMeter: true, unitType: 'Metre' },
-      { title: 'Üst Kolon Boru Adaptörü', isMeter: false, unitType: 'Adet' }
-    ];
+    const selectedItems = selectedIndices.map(idx => {
+      const item = sondajData[idx];
+      return {
+        title: isEn ? item.en : item.tr,
+        marka: '',
+        model: '',
+        calismaAraligi: '',
+        guc: '',
+        cikis: '',
+        extraDetails: '',
+        customSpecs: [],
+        qty: '',
+        unitType: isEn ? item.unitEn : item.unitTr,
+        isMeter: item.isMeter,
+        unitPrice: '',
+        pricingCalc: {
+          isOpen: false,
+          mode: 'discount',
+          listPrice: '',
+          buyDiscount: '',
+          sellDiscount: '',
+          netCost: '',
+          markupPercent: ''
+        }
+      };
+    });
 
-    this.state.items = templateItems.map(t => ({
-      title: t.title,
-      marka: '',
-      model: '',
-      calismaAraligi: '',
-      guc: '',
-      cikis: '',
-      extraDetails: '',
-      customSpecs: [],
-      qty: '',
-      unitType: t.unitType,
-      isMeter: t.isMeter,
-      unitPrice: '',
-      pricingCalc: {
-        isOpen: false,
-        mode: 'discount',
-        listPrice: '',
-        buyDiscount: '',
-        sellDiscount: '',
-        netCost: '',
-        markupPercent: ''
-      }
-    }));
-
+    this.state.items = selectedItems;
     this.renderItemsList();
     this.renderPreview();
     this.closeSondajModal();
 
-    // Yanlışlıkla tıklamalara karşı 1 tıkla Geri Al (Undo) butonlu şık bildirim
+    // 1 tıkla Geri Al (Undo) butonu
     const undoBtnId = 'btn-undo-sondaj-' + Date.now();
+    const count = selectedIndices.length;
     const msgHtml = `
       <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px;">
-        <span style="font-size: 0.84rem;">${isEn ? '8 Drilling Proposal titles loaded.' : '8 standart Sondaj Teklifi kalemi yüklendi.'}</span>
+        <span style="font-size: 0.84rem;">${isEn ? `${count} Drilling Proposal items loaded.` : `${count} Sondaj Teklifi kalemi yüklendi.`}</span>
         <button type="button" id="${undoBtnId}" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.38); color: #fff; border-radius: 4px; padding: 3px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
           <span>${isEn ? 'Undo' : 'Geri Al'}</span>
@@ -4346,9 +4487,6 @@ class QuotationApp {
 
   clearSondajTemplate() {
     const isEn = (this.state.language === 'en');
-
-    // Eğer şablon yüklenmeden önce kullanıcının kendi kalemleri vardıysa onları geri yükle,
-    // yoksa orijinal boş kalem şablonuna (DEFAULT_ITEMS) sıfırla.
     if (this.previousItemsBeforeTemplate && this.previousItemsBeforeTemplate.length > 0) {
       this.state.items = JSON.parse(JSON.stringify(this.previousItemsBeforeTemplate));
       this.previousItemsBeforeTemplate = null;
@@ -4362,6 +4500,225 @@ class QuotationApp {
 
     this.showToast(
       isEn ? 'Drilling template removed. Restored to original items.' : 'Sondaj şablonu silindi, orijinal kalemlere geri dönüldü.',
+      'info'
+    );
+  }
+
+  // --- HİDROFOR PAKETİ ŞABLONU ---
+
+  openHidroforModal() {
+    if (!this.modalConfirmHidrofor) {
+      this.executeHidroforTemplate();
+      return;
+    }
+
+    const isEn = (this.state.language === 'en');
+
+    // Mevcut kalemlerde kullanıcının girdiği veri var mı kontrol et
+    const hasFilled = Array.isArray(this.state.items) && this.state.items.some(it =>
+      (it.title && it.title.trim()) ||
+      (it.marka && it.marka.trim()) ||
+      (it.model && it.model.trim()) ||
+      (it.qty !== '' && it.qty !== undefined && it.qty !== null) ||
+      (it.unitPrice !== '' && it.unitPrice !== undefined && it.unitPrice !== null)
+    );
+
+    if (this.hidroforModalWarning) {
+      this.hidroforModalWarning.style.display = hasFilled ? 'block' : 'none';
+    }
+
+    // Modal başlıkları & metinleri
+    const modalTitle = document.getElementById('hidrofor-modal-title');
+    const modalSubtitle = document.getElementById('hidrofor-modal-subtitle');
+    const modalWarningTitle = document.getElementById('hidrofor-modal-warning-title');
+    const modalWarningDesc = document.getElementById('hidrofor-modal-warning-desc');
+    const modalDesc = document.getElementById('hidrofor-modal-desc');
+    const btnCancel = document.getElementById('btn-cancel-hidrofor');
+    const btnClearText = document.getElementById('hidrofor-modal-clear-text');
+
+    if (modalTitle) modalTitle.textContent = isEn ? 'Booster Package Template' : 'Hidrofor Paketi Şablonu';
+    if (modalSubtitle) modalSubtitle.textContent = isEn ? 'Standard Booster Package (Max 8 Items) — Exclude items customer already owns' : 'Maksimum 8 Kalemlik Standart Paket — Müşteride mevcut olanları çıkarabilirsiniz';
+    if (modalWarningTitle) modalWarningTitle.textContent = isEn ? 'Existing Items Will Be Replaced!' : 'Mevcut Kalemler Temizlenecektir!';
+    if (modalWarningDesc) modalWarningDesc.textContent = isEn ? 'Current entered item details will be cleared and replaced with selected booster items.' : 'Şu anda girdiğiniz ürün ve fiyat verileri yerine seçilen hidrofor paketi kalemleri yüklenecektir.';
+    if (modalDesc) modalDesc.textContent = isEn ? 'Select items to load into quotation:' : 'Teklife eklenecek kalemleri seçin:';
+    if (btnCancel) btnCancel.textContent = isEn ? 'Cancel' : 'Vazgeç';
+    if (btnClearText) btnClearText.textContent = isEn ? 'Delete Template' : 'Şablonu Sil';
+
+    // Kalem kartlarının dil metinlerini güncelle
+    const hidroforData = this.getHidroforTemplateData();
+    const cards = this.modalConfirmHidrofor.querySelectorAll('.template-item-check-card');
+    cards.forEach(card => {
+      const idx = parseInt(card.dataset.index, 10);
+      if (hidroforData[idx]) {
+        const titleSpan = card.querySelector('.template-item-title');
+        const unitSpan = card.querySelector('.template-item-unit');
+        if (titleSpan) titleSpan.textContent = isEn ? hidroforData[idx].en : hidroforData[idx].tr;
+        if (unitSpan) unitSpan.textContent = isEn ? hidroforData[idx].unitEn : hidroforData[idx].unitTr;
+      }
+    });
+
+    this.setHidroforAllCheckboxes(true);
+    this.modalConfirmHidrofor.classList.add('active');
+
+    setTimeout(() => {
+      if (this.btnCancelHidrofor) this.btnCancelHidrofor.focus();
+    }, 50);
+  }
+
+  closeHidroforModal() {
+    if (this.modalConfirmHidrofor) {
+      this.modalConfirmHidrofor.classList.remove('active');
+    }
+  }
+
+  updateHidroforSelectionUI() {
+    if (!this.modalConfirmHidrofor) return;
+    const isEn = (this.state.language === 'en');
+    const checkboxes = Array.from(this.modalConfirmHidrofor.querySelectorAll('.hidrofor-item-checkbox'));
+    let checkedCount = 0;
+
+    checkboxes.forEach(cb => {
+      const card = cb.closest('.template-item-check-card');
+      if (card) {
+        card.classList.toggle('active', cb.checked);
+      }
+      if (cb.checked) checkedCount++;
+    });
+
+    if (this.hidroforCounterBadge) {
+      this.hidroforCounterBadge.textContent = isEn ? `Selected: ${checkedCount} / 8 Items` : `Seçili: ${checkedCount} / 8 Kalem`;
+    }
+    if (this.hidroforModalSubmitText) {
+      this.hidroforModalSubmitText.textContent = isEn
+        ? `Load Selected Items (${checkedCount} Items)`
+        : `Seçilen Kalemleri Yükle (${checkedCount} Kalem)`;
+    }
+
+    if (this.btnConfirmHidroforApply) {
+      if (checkedCount === 0) {
+        this.btnConfirmHidroforApply.style.opacity = '0.5';
+        this.btnConfirmHidroforApply.style.cursor = 'not-allowed';
+      } else {
+        this.btnConfirmHidroforApply.style.opacity = '1';
+        this.btnConfirmHidroforApply.style.cursor = 'pointer';
+      }
+    }
+  }
+
+  setHidroforAllCheckboxes(state) {
+    if (!this.modalConfirmHidrofor) return;
+    const checkboxes = this.modalConfirmHidrofor.querySelectorAll('.hidrofor-item-checkbox');
+    checkboxes.forEach(cb => {
+      cb.checked = !!state;
+    });
+    this.updateHidroforSelectionUI();
+  }
+
+  executeHidroforTemplate() {
+    const isEn = (this.state.language === 'en');
+    const hidroforData = this.getHidroforTemplateData();
+    let selectedIndices = [];
+
+    if (this.modalConfirmHidrofor) {
+      const checkboxes = Array.from(this.modalConfirmHidrofor.querySelectorAll('.hidrofor-item-checkbox'));
+      selectedIndices = checkboxes.filter(cb => cb.checked).map(cb => parseInt(cb.dataset.index, 10));
+    } else {
+      selectedIndices = [0, 1, 2, 3, 4, 5, 6, 7];
+    }
+
+    if (selectedIndices.length === 0) {
+      this.showToast(isEn ? 'Please select at least 1 item to load.' : 'Lütfen teklife eklenecek en az 1 kalem seçin.', 'warning');
+      return;
+    }
+
+    // Geri alma (Undo) için mevcut kalemleri yedekle
+    this.previousItemsBeforeTemplate = JSON.parse(JSON.stringify(this.state.items || []));
+
+    const selectedItems = selectedIndices.map(idx => {
+      const item = hidroforData[idx];
+      return {
+        title: isEn ? item.en : item.tr,
+        marka: '',
+        model: '',
+        calismaAraligi: '',
+        guc: '',
+        cikis: '',
+        extraDetails: '',
+        customSpecs: [],
+        qty: '',
+        unitType: isEn ? item.unitEn : item.unitTr,
+        isMeter: item.isMeter,
+        unitPrice: '',
+        pricingCalc: {
+          isOpen: false,
+          mode: 'discount',
+          listPrice: '',
+          buyDiscount: '',
+          sellDiscount: '',
+          netCost: '',
+          markupPercent: ''
+        }
+      };
+    });
+
+    this.state.items = selectedItems;
+    this.renderItemsList();
+    this.renderPreview();
+    this.closeHidroforModal();
+
+    // 1 tıkla Geri Al (Undo) butonu
+    const undoBtnId = 'btn-undo-hidrofor-' + Date.now();
+    const count = selectedIndices.length;
+    const msgHtml = `
+      <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px;">
+        <span style="font-size: 0.84rem;">${isEn ? `${count} Booster Package items loaded.` : `${count} Hidrofor Paketi kalemi yüklendi.`}</span>
+        <button type="button" id="${undoBtnId}" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.38); color: #fff; border-radius: 4px; padding: 3px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          <span>${isEn ? 'Undo' : 'Geri Al'}</span>
+        </button>
+      </div>
+    `;
+    this.showToast(msgHtml, 'success', 7000);
+
+    setTimeout(() => {
+      const undoBtn = document.getElementById(undoBtnId);
+      if (undoBtn) {
+        undoBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          this.undoHidroforTemplate();
+        });
+      }
+    }, 50);
+  }
+
+  undoHidroforTemplate() {
+    if (this.previousItemsBeforeTemplate && this.previousItemsBeforeTemplate.length > 0) {
+      this.state.items = JSON.parse(JSON.stringify(this.previousItemsBeforeTemplate));
+      this.renderItemsList();
+      this.renderPreview();
+      this.showToast(
+        this.state.language === 'en' ? 'Previous items restored.' : 'Önceki kalemler geri yüklendi.',
+        'info'
+      );
+      this.previousItemsBeforeTemplate = null;
+    }
+  }
+
+  clearHidroforTemplate() {
+    const isEn = (this.state.language === 'en');
+    if (this.previousItemsBeforeTemplate && this.previousItemsBeforeTemplate.length > 0) {
+      this.state.items = JSON.parse(JSON.stringify(this.previousItemsBeforeTemplate));
+      this.previousItemsBeforeTemplate = null;
+    } else {
+      this.state.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
+    }
+
+    this.renderItemsList();
+    this.renderPreview();
+    this.closeHidroforModal();
+
+    this.showToast(
+      isEn ? 'Booster template removed. Restored to original items.' : 'Hidrofor şablonu silindi, orijinal kalemlere geri dönüldü.',
       'info'
     );
   }
@@ -4498,15 +4855,7 @@ class QuotationApp {
     this.updateAkbankRateBadge(isAkbank);
     this.updateCurrencyCalcButtonState(isAkbank);
 
-    if (this.btnTemplateSondaj) {
-      const span = this.btnTemplateSondaj.querySelector('span');
-      if (span) {
-        span.textContent = (this.state.language === 'en') ? '🌊 Drilling Proposal' : '🌊 Sondaj Teklifi';
-      }
-      this.btnTemplateSondaj.title = (this.state.language === 'en')
-        ? 'Automatically loads 8 standard Drilling Proposal item titles'
-        : '8 kalemlik standart Sondaj Teklifi ürün başlıklarını otomatik yükler';
-    }
+    this.updateTemplateButtonsLanguage();
 
     // Paket / Proje Özel Fiyatı Senkronizasyonu
     const isPkg = !!this.state.isPackagePrice;
