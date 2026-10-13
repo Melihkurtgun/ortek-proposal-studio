@@ -781,22 +781,27 @@ textarea.form-control {
    ========================================================================== */
 .template-checklist-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
   margin-top: 6px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .template-item-check-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 6px;
-  padding: 8px 10px;
+  padding: 7px 9px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
   user-select: none;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .template-item-check-card:hover {
@@ -820,12 +825,17 @@ textarea.form-control {
   border-color: rgba(255, 255, 255, 0.05);
 }
 
+.template-item-check-card input[type="checkbox"] {
+  flex-shrink: 0;
+}
+
 .template-item-num {
   font-size: 0.72rem;
   font-weight: 700;
   color: #64748b;
-  width: 16px;
+  width: 14px;
   text-align: center;
+  flex-shrink: 0;
 }
 
 .template-item-check-card.active .template-item-num {
@@ -837,27 +847,45 @@ textarea.form-control {
 }
 
 .template-item-title {
-  font-size: 0.81rem;
+  font-size: 0.78rem;
   font-weight: 600;
   color: #f1f5f9;
   flex: 1;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  letter-spacing: 0.1px;
 }
 
 .template-item-unit {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: #94a3b8;
   background: rgba(0, 0, 0, 0.3);
-  padding: 1px 5px;
+  padding: 1px 4px;
   border-radius: 3px;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .template-item-unit.highlight {
   color: #38bdf8;
   font-weight: 600;
+}
+
+#modal-confirm-sondaj .modal-box,
+#modal-confirm-hidrofor .modal-box {
+  max-width: 580px !important;
+  width: 95% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
+}
+
+#modal-confirm-sondaj .modal-body,
+#modal-confirm-hidrofor .modal-body {
+  overflow-x: hidden !important;
+  padding: 1.1rem 1.3rem !important;
+  box-sizing: border-box !important;
 }
 
 .template-counter-badge {

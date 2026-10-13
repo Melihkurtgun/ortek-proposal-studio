@@ -4262,14 +4262,14 @@ class QuotationApp {
 
   getSondajTemplateData() {
     return [
-      { tr: 'Dalgıç Motor', en: 'Submersible Motor', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
-      { tr: 'Dalgıç Pompa', en: 'Submersible Pump', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
-      { tr: 'Elektrik Kablosu', en: 'Submersible Power Cable', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
-      { tr: 'Kontrol Panosu', en: 'Control Panel', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
-      { tr: 'Kuyu Akıtma Başlığı (Vanalı)', en: 'Wellhead (With Valve)', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
-      { tr: 'Paslanmaz Klemens (Halat İçin)', en: 'Stainless Steel Clamp', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
-      { tr: 'İzoleli Çelik Halat', en: 'Insulated Steel Wire Rope', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
-      { tr: 'Üst Kolon Boru Adaptörü', en: 'Top Column Pipe Adapter', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false }
+      { tr: 'Dalgıç Motor', cardTr: 'Dalgıç Motor', en: 'Submersible Motor', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Dalgıç Pompa', cardTr: 'Dalgıç Pompa', en: 'Submersible Pump', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Elektrik Kablosu', cardTr: 'Elektrik Kablosu', en: 'Submersible Power Cable', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'Kontrol Panosu', cardTr: 'Kontrol Panosu', en: 'Control Panel', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Kuyu Akıtma Başlığı (Vanalı)', cardTr: 'Kuyu Akıtma Başlığı (Vanalı)', en: 'Wellhead (With Valve)', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false },
+      { tr: 'Paslanmaz Klemens (Halat İçin)', cardTr: 'Paslanmaz Klemens (Halat)', en: 'Stainless Steel Clamp', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'İzoleli Çelik Halat', cardTr: 'İzoleli Çelik Halat', en: 'Insulated Steel Wire Rope', unitTr: 'Metre', unitEn: 'Meter', isMeter: true },
+      { tr: 'Üst Kolon Boru Adaptörü', cardTr: 'Üst Kolon Boru Adaptörü', en: 'Top Column Pipe Adapter', unitTr: 'Adet', unitEn: 'Pcs', isMeter: false }
     ];
   }
 
@@ -4332,7 +4332,10 @@ class QuotationApp {
       if (sondajData[idx]) {
         const titleSpan = card.querySelector('.template-item-title');
         const unitSpan = card.querySelector('.template-item-unit');
-        if (titleSpan) titleSpan.textContent = isEn ? sondajData[idx].en : sondajData[idx].tr;
+        if (titleSpan) {
+          titleSpan.textContent = isEn ? sondajData[idx].en : (sondajData[idx].cardTr || sondajData[idx].tr);
+          titleSpan.title = isEn ? sondajData[idx].en : sondajData[idx].tr;
+        }
         if (unitSpan) unitSpan.textContent = isEn ? sondajData[idx].unitEn : sondajData[idx].unitTr;
       }
     });
