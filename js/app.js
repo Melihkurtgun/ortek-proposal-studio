@@ -4233,12 +4233,12 @@ class QuotationApp {
     const isEn = (this.state.language === 'en');
     if (this.btnTemplateSondaj) {
       const titleSpan = this.btnTemplateSondaj.querySelector('.template-chip-title');
-      if (titleSpan) titleSpan.textContent = isEn ? 'Drilling Proposal' : 'Sondaj Teklifi';
+      if (titleSpan) titleSpan.textContent = isEn ? 'Drilling Package' : 'Sondaj Paketi';
       const badgeSpan = this.btnTemplateSondaj.querySelector('.template-chip-badge');
       if (badgeSpan) badgeSpan.textContent = isEn ? '8 Items' : '8 Kalem';
       this.btnTemplateSondaj.title = isEn
-        ? 'Customizable standard Drilling Proposal (8 items)'
-        : 'Kuyu & Dalgıç Şablonu (Seçilebilir 8 Kalem)';
+        ? 'Customizable standard Drilling Package (8 items)'
+        : 'Sondaj Paketi Şablonu (Seçilebilir 8 Kalem)';
     }
 
     if (this.btnTemplateHidrofor) {
@@ -4316,8 +4316,8 @@ class QuotationApp {
     const btnCancel = document.getElementById('btn-cancel-sondaj');
     const btnClearText = document.getElementById('sondaj-modal-clear-text');
 
-    if (modalTitle) modalTitle.textContent = isEn ? 'Drilling Proposal Template' : 'Sondaj Teklifi Şablonu';
-    if (modalSubtitle) modalSubtitle.textContent = isEn ? 'Standard Submersible & Drilling Proposal — Select or exclude items' : 'Standart Dalgıç & Sondaj Kalemleri — Müşteride mevcut olanları çıkarabilirsiniz';
+    if (modalTitle) modalTitle.textContent = isEn ? 'Drilling Package Template' : 'Sondaj Paketi Şablonu';
+    if (modalSubtitle) modalSubtitle.textContent = isEn ? 'Standard Submersible & Drilling Package — Select or exclude items' : 'Maksimum 8 Kalemlik Standart Paket — Müşteride mevcut olanları çıkarabilirsiniz';
     if (modalWarningTitle) modalWarningTitle.textContent = isEn ? 'Existing Items Will Be Replaced!' : 'Mevcut Kalemler Temizlenecektir!';
     if (modalWarningDesc) modalWarningDesc.textContent = isEn ? 'Current entered item details will be cleared and replaced with selected items.' : 'Şu anda girdiğiniz ürün ve fiyat verileri yerine seçilen sondaj kalemleri yüklenecektir.';
     if (modalDesc) modalDesc.textContent = isEn ? 'Select items to load into quotation:' : 'Teklife eklenecek kalemleri seçin:';
@@ -4455,7 +4455,7 @@ class QuotationApp {
     const count = selectedIndices.length;
     const msgHtml = `
       <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; gap: 12px;">
-        <span style="font-size: 0.84rem;">${isEn ? `${count} Drilling Proposal items loaded.` : `${count} Sondaj Teklifi kalemi yüklendi.`}</span>
+        <span style="font-size: 0.84rem;">${isEn ? `${count} Drilling Package items loaded.` : `${count} Sondaj Paketi kalemi yüklendi.`}</span>
         <button type="button" id="${undoBtnId}" style="background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.38); color: #fff; border-radius: 4px; padding: 3px 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: all 0.2s ease;">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
           <span>${isEn ? 'Undo' : 'Geri Al'}</span>
@@ -4502,7 +4502,7 @@ class QuotationApp {
     this.closeSondajModal();
 
     this.showToast(
-      isEn ? 'Drilling template removed. Restored to original items.' : 'Sondaj şablonu silindi, orijinal kalemlere geri dönüldü.',
+      isEn ? 'Drilling package template removed. Restored to original items.' : 'Sondaj paketi şablonu silindi, orijinal kalemlere geri dönüldü.',
       'info'
     );
   }
