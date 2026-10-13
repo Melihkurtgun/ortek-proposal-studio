@@ -385,41 +385,43 @@
         <!-- 4. KART: Teklif Kalemleri (Sayfa 2 Ürün Tablosu + Dinamik Ekstra Özellikler - Şeffaf Placeholder'lı) -->
         <section class="panel-card">
           <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
-            <span class="panel-title">
+            <span class="panel-title" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0;">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
-              4. Teklif Kalemleri (Sayfa 2)
+              <span>4. Teklif Kalemleri (Sayfa 2)</span>
             </span>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <select id="select-currency" class="form-control" style="padding: 0.28rem 0.65rem; font-size: 0.78rem; width: auto; font-weight: 600; height: 30px; border-radius: 6px; background: rgba(14, 21, 36, 0.9); border-color: rgba(56, 189, 248, 0.35); color: #f1f5f9;">
-                <option value="EUR">Euro (EUR €)</option>
-                <option value="USD">USD ($)</option>
-                <option value="TL">Türk Lirası (TL ₺)</option>
-              </select>
-              <button type="button" class="btn btn-dark" id="btn-open-brand-discounts" title="Marka Alış İskonto Oranlarını Görüntüle ve Güncelle" style="height: 30px; padding: 0 10px; font-size: 0.74rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(245, 158, 11, 0.5); color: #fbbf24; background: rgba(245, 158, 11, 0.12); border-radius: 6px; cursor: pointer; transition: all 0.2s ease; white-space: nowrap;">
-                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
-                <span>İskonto Oranları</span>
-              </button>
-            </div>
+            <select id="select-currency" class="form-control" style="padding: 0.28rem 0.65rem; font-size: 0.78rem; width: auto; font-weight: 600; height: 30px; border-radius: 6px; background: rgba(14, 21, 36, 0.9); border-color: rgba(56, 189, 248, 0.35); color: #f1f5f9; flex-shrink: 0;">
+              <option value="EUR">Euro (EUR €)</option>
+              <option value="USD">USD ($)</option>
+              <option value="TL">Türk Lirası (TL ₺)</option>
+            </select>
           </div>
 
-          <!-- Hızlı Şablonlar Çubuğu (Sondaj & Hidrofor Paketleri) -->
+          <!-- Hızlı Şablonlar & İskonto Konsolu (Sondaj & Hidrofor Paketleri) -->
           <div class="templates-action-deck">
-            <div class="templates-deck-header">
+            <div class="templates-deck-top">
               <span class="templates-deck-label">
                 <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
                 <span>Hızlı Şablonlar:</span>
               </span>
+              <button type="button" class="btn-deck-discount" id="btn-open-brand-discounts" title="Marka Alış İskonto Oranlarını Görüntüle ve Güncelle">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                <span>% İskonto Oranları</span>
+              </button>
             </div>
-            <div class="templates-deck-buttons">
+            <div class="templates-deck-grid">
               <button type="button" class="btn-template-chip btn-template-sondaj" id="btn-template-sondaj" title="Kuyu & Dalgıç Şablonu (Seçilebilir 8 Kalem)">
-                <span class="template-chip-icon">🌊</span>
-                <span class="template-chip-title">Sondaj Teklifi</span>
+                <div class="template-chip-main">
+                  <span class="template-chip-icon">🌊</span>
+                  <span class="template-chip-title">Sondaj Teklifi</span>
+                </div>
                 <span class="template-chip-badge">8 Kalem</span>
               </button>
               <button type="button" class="btn-template-chip btn-template-hidrofor" id="btn-template-hidrofor" title="Hidrofor Paketi Şablonu (Seçilebilir Maks. 8 Kalem)">
-                <span class="template-chip-icon">💧</span>
-                <span class="template-chip-title">Hidrofor Paketi</span>
-                <span class="template-chip-badge">Maks. 8 Kalem</span>
+                <div class="template-chip-main">
+                  <span class="template-chip-icon">💧</span>
+                  <span class="template-chip-title">Hidrofor Paketi</span>
+                </div>
+                <span class="template-chip-badge">8 Kalem</span>
               </button>
             </div>
           </div>

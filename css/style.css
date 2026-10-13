@@ -619,22 +619,21 @@ textarea.form-control {
    Hızlı Şablonlar Çubuğu (Templates Action Deck)
    ========================================================================== */
 .templates-action-deck {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 8px;
-  padding: 0.45rem 0.65rem;
+  padding: 0.5rem 0.65rem;
   margin-bottom: 0.65rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
 }
 
-.templates-deck-header {
+.templates-deck-top {
   display: flex;
   align-items: center;
-  flex-shrink: 0;
+  justify-content: space-between;
+  margin-bottom: 0.45rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .templates-deck-label {
@@ -652,29 +651,52 @@ textarea.form-control {
   color: var(--accent-amber);
 }
 
-.templates-deck-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  justify-content: flex-end;
-}
-
-.btn-template-chip {
-  background: rgba(30, 41, 59, 0.8);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 0.75rem;
+.btn-deck-discount {
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fbbf24;
+  padding: 3px 9px;
+  font-size: 0.73rem;
   font-weight: 600;
-  color: #f1f5f9;
+  border-radius: 5px;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-deck-discount:hover {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #f59e0b;
+  color: #fef3c7;
+  transform: translateY(-1px);
+}
+
+.templates-deck-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  width: 100%;
+}
+
+.btn-template-chip {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px 8px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  border-radius: 6px;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
-  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .btn-template-chip:hover {
@@ -686,9 +708,43 @@ textarea.form-control {
   transform: translateY(0);
 }
 
+.template-chip-main {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  flex: 1;
+}
+
+.template-chip-icon {
+  font-size: 0.95rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.template-chip-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.2px;
+}
+
+.template-chip-badge {
+  font-size: 0.63rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #94a3b8;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 .btn-template-sondaj {
   background: linear-gradient(135deg, rgba(2, 132, 199, 0.35), rgba(3, 105, 161, 0.55));
-  border-color: rgba(56, 189, 248, 0.45);
+  border: 1px solid rgba(56, 189, 248, 0.45);
   color: #e0f2fe;
 }
 
@@ -698,9 +754,14 @@ textarea.form-control {
   box-shadow: 0 0 12px rgba(56, 189, 248, 0.3);
 }
 
+.btn-template-sondaj .template-chip-badge {
+  color: #7dd3fc;
+  border-color: rgba(56, 189, 248, 0.3);
+}
+
 .btn-template-hidrofor {
   background: linear-gradient(135deg, rgba(13, 148, 136, 0.35), rgba(15, 118, 110, 0.55));
-  border-color: rgba(45, 212, 191, 0.45);
+  border: 1px solid rgba(45, 212, 191, 0.45);
   color: #ccfbf1;
 }
 
@@ -708,30 +769,6 @@ textarea.form-control {
   background: linear-gradient(135deg, rgba(13, 148, 136, 0.55), rgba(15, 118, 110, 0.75));
   border-color: #2dd4bf;
   box-shadow: 0 0 12px rgba(45, 212, 191, 0.3);
-}
-
-.template-chip-icon {
-  font-size: 0.95rem;
-  line-height: 1;
-}
-
-.template-chip-title {
-  letter-spacing: 0.2px;
-}
-
-.template-chip-badge {
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: rgba(0, 0, 0, 0.35);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #94a3b8;
-}
-
-.btn-template-sondaj .template-chip-badge {
-  color: #7dd3fc;
-  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .btn-template-hidrofor .template-chip-badge {

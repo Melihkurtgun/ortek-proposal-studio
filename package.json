@@ -1,6 +1,6 @@
 {
   "name": "ortek-proposal-studio",
-  "version": "1.0.92",
+  "version": "1.0.93",
   "description": "Ortek Proposal Studio",
   "main": "main.js",
   "scripts": {

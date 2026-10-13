@@ -4245,7 +4245,7 @@ class QuotationApp {
       const titleSpan = this.btnTemplateHidrofor.querySelector('.template-chip-title');
       if (titleSpan) titleSpan.textContent = isEn ? 'Booster Package' : 'Hidrofor Paketi';
       const badgeSpan = this.btnTemplateHidrofor.querySelector('.template-chip-badge');
-      if (badgeSpan) badgeSpan.textContent = isEn ? 'Max 8 Items' : 'Maks. 8 Kalem';
+      if (badgeSpan) badgeSpan.textContent = isEn ? '8 Items' : '8 Kalem';
       this.btnTemplateHidrofor.title = isEn
         ? 'Customizable standard Booster Package (Max 8 items)'
         : 'Hidrofor Paketi Şablonu (Seçilebilir Maks. 8 Kalem)';
