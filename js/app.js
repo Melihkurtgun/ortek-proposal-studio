@@ -35,6 +35,8 @@ const DEFAULT_ITEMS = [
     qty: "",
     unitType: "Adet",
     isMeter: false,
+    isPriceIncluded: false,
+    priceIncludedText: "*Fiyata dahildir.",
     unitPrice: "",
     pricingCalc: {
       isOpen: false,
@@ -111,6 +113,7 @@ class QuotationApp {
     this.calcSourceCurrency = 'EUR';
     this.calcVatMode = 'gross';
     this.customersData = [];
+    this.deletedCustomers = new Set();
     this.initStorage();
     this.initState();
     this.bindDomElements();
@@ -123,6 +126,13 @@ class QuotationApp {
       this.fetchTcmbRates();
       this.fetchAkbankRates();
     }, 1000);
+  }
+
+  isCustomerDeleted(name, attention = '') {
+    if (!name || typeof name !== 'string') return false;
+    const cleanName = name.trim().toLowerCase();
+    const key = (cleanName + '___' + (attention || '').trim().toLowerCase()).toLowerCase();
+    return this.deletedCustomers.has(key) || this.deletedCustomers.has(cleanName) || this.deletedCustomers.has(cleanName + '___');
   }
 
   normalizeUserKey(name) {
@@ -4141,6 +4151,8 @@ class QuotationApp {
       qty: '',
       unitType: 'Adet',
       isMeter: false,
+      isPriceIncluded: false,
+      priceIncludedText: (this.state.language === 'en') ? '*Included in price.' : '*Fiyata dahildir.',
       unitPrice: '',
       pricingCalc: {
         isOpen: false,
@@ -4411,6 +4423,7 @@ class QuotationApp {
       subtotal = parseFloat(this.state.packagePrice) || 0;
     } else {
       this.state.items.forEach(item => {
+        if (item.isPriceIncluded) return;
         const q = parseFloat(item.qty) || 0;
         const p = parseFloat(item.unitPrice) || 0;
         subtotal += q * p;
@@ -4747,9 +4760,24 @@ class QuotationApp {
               <div style="margin-top: 4px; display: flex; justify-content: flex-end; align-items: center; min-height: 24px;">
                 <span style="font-size: 0.71rem; color: #38bdf8; opacity: 0.85;">(Proje Özel Fiyat Aktif)</span>
               </div>
+            ` : item.isPriceIncluded ? `
+              <div style="position: relative;">
+                <input type="text" class="form-control item-input input-included-active" data-field="priceIncludedText" data-index="${index}" value="${this.escapeHtml(item.priceIncludedText || (isEn ? '*Included in price.' : '*Fiyata dahildir.'))}" placeholder="${isEn ? '*Included in price.' : '*Fiyata dahildir.'}" style="padding-right: 105px; font-size: 0.8rem; font-weight: 500;">
+                <span class="badge-included-item">🎁 ${isEn ? 'Included' : 'Fiyata Dahil'}</span>
+              </div>
+              <div style="margin-top: 4px; display: flex; justify-content: flex-end; align-items: center; min-height: 24px;">
+                <label class="unit-mode-toggle" style="margin-top: 0; margin-bottom: 0;">
+                  <input type="checkbox" class="custom-checkbox item-included-check" data-index="${index}" checked>
+                  <span>${isEn ? 'Included in price' : 'Fiyata dahil'}</span>
+                </label>
+              </div>
             ` : `
               <input type="number" step="0.01" min="0" class="form-control item-input" data-field="unitPrice" data-index="${index}" value="${item.unitPrice !== undefined && item.unitPrice !== null ? item.unitPrice : ''}" placeholder="Örn: 0.00">
-              <div style="margin-top: 4px; display: flex; justify-content: flex-end; align-items: center; min-height: 24px;">
+              <div style="margin-top: 4px; display: flex; justify-content: space-between; align-items: center; min-height: 24px;">
+                <label class="unit-mode-toggle" style="margin-top: 0; margin-bottom: 0;">
+                  <input type="checkbox" class="custom-checkbox item-included-check" data-index="${index}">
+                  <span>${isEn ? 'Included in price' : 'Fiyata dahil'}</span>
+                </label>
                 <button type="button" class="btn-pricing-calc-toggle ${item.pricingCalc.isOpen ? 'active' : ''}" data-index="${index}">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><line x1="16" y1="14" x2="16" y2="18"/><path d="M16 10h.01"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M12 14h.01"/><path d="M8 14h.01"/><path d="M12 18h.01"/><path d="M8 18h.01"/></svg>
                   <span>${item.pricingCalc.isOpen ? (isEn ? 'Close Calc' : 'Hesaplayıcıyı Kapat') : (isEn ? 'Price Calculator' : 'Fiyat Hesaplayıcı')}</span>
@@ -4760,7 +4788,7 @@ class QuotationApp {
         </div>
 
         <!-- Fiyat ve İskonto Hesaplayıcı Kutusu -->
-        <div class="item-pricing-calc-box" id="calc-box-${index}" style="display: ${(!this.state.isPackagePrice && item.pricingCalc.isOpen) ? 'block' : 'none'};">
+        <div class="item-pricing-calc-box" id="calc-box-${index}" style="display: ${(!this.state.isPackagePrice && !item.isPriceIncluded && item.pricingCalc.isOpen) ? 'block' : 'none'};">
           <div class="pricing-calc-tabs">
             <button type="button" class="pricing-calc-tab-btn ${item.pricingCalc.mode === 'discount' ? 'active' : ''}" data-index="${index}" data-mode="discount">
               ${isEn ? 'List Price & Discount' : 'Liste Fiyatı & İskonto'}
@@ -4813,7 +4841,7 @@ class QuotationApp {
         </div>
 
         <div style="text-align: right; margin-top: 0.4rem; font-size: 0.78rem; color: var(--accent-emerald); font-weight: 600;">
-          ${isEn ? 'Item Total:' : 'Satır Toplamı:'} <span class="item-line-total-val">${this.formatCurrency(lineTotal)}</span>
+          ${isEn ? 'Item Total:' : 'Satır Toplamı:'} <span class="item-line-total-val">${item.isPriceIncluded ? `<i style="color: #64748b; font-weight: normal;">(${isEn ? 'Included in Price' : 'Fiyata Dahil'})</i>` : this.formatCurrency(lineTotal)}</span>
         </div>
       `;
 
@@ -4827,6 +4855,11 @@ class QuotationApp {
         const idx = parseInt(e.target.dataset.index, 10);
         const field = e.target.dataset.field;
         let val = e.target.value;
+        if (field === 'priceIncludedText') {
+          this.state.items[idx].priceIncludedText = val;
+          this.renderPreview();
+          return;
+        }
         if (field === 'qty' || field === 'unitPrice') {
           val = val === '' ? '' : parseFloat(val);
           const card = inp.closest('.item-card');
@@ -4834,7 +4867,14 @@ class QuotationApp {
             const currentQty = field === 'qty' ? (parseFloat(val) || 0) : (parseFloat(this.state.items[idx].qty) || 0);
             const currentPrice = field === 'unitPrice' ? (parseFloat(val) || 0) : (parseFloat(this.state.items[idx].unitPrice) || 0);
             const lineTotEl = card.querySelector('.item-line-total-val');
-            if (lineTotEl) lineTotEl.textContent = this.formatCurrency(currentQty * currentPrice);
+            if (lineTotEl) {
+              if (this.state.items[idx].isPriceIncluded) {
+                const isEn = (this.state.language === 'en');
+                lineTotEl.innerHTML = `<i style="color: #64748b; font-weight: normal;">(${isEn ? 'Included in Price' : 'Fiyata Dahil'})</i>`;
+              } else {
+                lineTotEl.textContent = this.formatCurrency(currentQty * currentPrice);
+              }
+            }
           }
         } else if (field === 'cikis') {
           if (/\b(?:1\/2|1\/4|3\/4|3\/8|5\/8|7\/8|1\/8|1\/3|2\/3)["' ]/.test(val) || val.endsWith('1/2"') || val.endsWith('1/4"') || val.endsWith('3/4"')) {
@@ -5063,6 +5103,21 @@ class QuotationApp {
         const idx = parseInt(e.target.dataset.index, 10);
         this.state.items[idx].isMeter = e.target.checked;
         this.state.items[idx].unitType = e.target.checked ? 'Metre' : 'Adet';
+        this.renderPreview();
+      });
+    });
+
+    // Fiyata Dahil Checkbox dinleyicisi
+    const includedChecks = this.itemsContainer.querySelectorAll('.item-included-check');
+    includedChecks.forEach(chk => {
+      chk.addEventListener('change', (e) => {
+        const idx = parseInt(e.target.dataset.index, 10);
+        const isChecked = e.target.checked;
+        this.state.items[idx].isPriceIncluded = isChecked;
+        if (isChecked && !this.state.items[idx].priceIncludedText) {
+          this.state.items[idx].priceIncludedText = (this.state.language === 'en') ? '*Included in price.' : '*Fiyata dahildir.';
+        }
+        this.renderItemsList();
         this.renderPreview();
       });
     });
@@ -5379,6 +5434,7 @@ class QuotationApp {
     if (item.guc) lines++;
     if (item.cikis) lines++;
     if (item.extraDetails) lines += Math.ceil(item.extraDetails.length / 45);
+    if (item.isPriceIncluded) lines++;
     if (item.customSpecs && item.customSpecs.length > 0) {
       item.customSpecs.forEach(s => { if (s.label || s.value) lines++; });
     }
@@ -5546,6 +5602,25 @@ class QuotationApp {
           <td class="col-qty">${qtyStr}</td>
           <td class="col-price" style="font-weight: 600; font-size: 0.8rem; color: #0284c7;">${rowPriceText}</td>
           <td class="col-total" style="font-weight: 600; font-size: 0.8rem; color: #0284c7;">${rowPriceText}</td>
+        </tr>
+      `;
+    }
+
+    if (item.isPriceIncluded) {
+      const defaultNote = isEn ? '*Included in price.' : '*Fiyata dahildir.';
+      const includedNote = this.escapeHtml(item.priceIncludedText || defaultNote);
+      const qtyStr = (q > 0) ? `${q} ${this.escapeHtml(unitLabel)}` : '';
+
+      return `
+        <tr>
+          <td class="col-no">${index + 1}</td>
+          <td class="col-desc">
+            ${descHtml}
+            <div class="price-included-note">${includedNote}</div>
+          </td>
+          <td class="col-qty">${qtyStr}</td>
+          <td class="col-price"></td>
+          <td class="col-total"></td>
         </tr>
       `;
     }
@@ -8559,12 +8634,43 @@ class QuotationApp {
   }
 
   initCustomersSync() {
+    // 0. Silinen cariler kara listesini yükle
+    try {
+      const storedDel = localStorage.getItem('ortek_deleted_customers');
+      if (storedDel) {
+        const parsedDel = JSON.parse(storedDel);
+        if (Array.isArray(parsedDel)) {
+          parsedDel.forEach(k => this.deletedCustomers.add(k.toLowerCase().trim()));
+        }
+      }
+    } catch (e) {}
+
+    if (window.electronAPI && window.electronAPI.loadJson) {
+      window.electronAPI.loadJson({ key: 'ortek_deleted_customers' }).then(res => {
+        if (res && res.success && Array.isArray(res.data)) {
+          res.data.forEach(k => this.deletedCustomers.add(k.toLowerCase().trim()));
+          if (this.customersData && this.customersData.length > 0) {
+            const beforeLen = this.customersData.length;
+            this.customersData = this.customersData.filter(c => !this.isCustomerDeleted(c.name, c.attention));
+            if (this.customersData.length !== beforeLen) {
+              localStorage.setItem('ortek_customers', JSON.stringify(this.customersData));
+              if (this.modalCustomersDirectory && this.modalCustomersDirectory.classList.contains('active')) {
+                this.renderCustomersTable(this.inputSearchCustomers ? this.inputSearchCustomers.value : '');
+              }
+            }
+          }
+        }
+      }).catch(() => {});
+    }
+
     // 1. Yerel depolamadan yükle
     try {
       const stored = localStorage.getItem('ortek_customers');
       if (stored) {
         const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) this.customersData = parsed;
+        if (Array.isArray(parsed)) {
+          this.customersData = parsed.filter(c => !this.isCustomerDeleted(c.name, c.attention));
+        }
       }
     } catch (e) {
       console.warn('Cari yerel yükleme hatası:', e);
@@ -8580,6 +8686,10 @@ class QuotationApp {
         snapshot.forEach(doc => {
           const data = doc.data();
           if (data && data.name) {
+            if (this.isCustomerDeleted(data.name, data.attention)) {
+              doc.ref.delete().catch(() => {});
+              return;
+            }
             const key = (data.name.trim() + '___' + (data.attention || '').trim()).toLowerCase();
             cloudMap.set(key, { ...data, id: doc.id });
           }
@@ -8588,12 +8698,15 @@ class QuotationApp {
         // Yerel verilerle birleştir
         const mergedMap = new Map();
         (this.customersData || []).forEach(c => {
+          if (this.isCustomerDeleted(c.name, c.attention)) return;
           const key = (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase();
           mergedMap.set(key, c);
         });
 
         cloudMap.forEach((v, k) => {
-          mergedMap.set(k, v);
+          if (!this.deletedCustomers.has(k)) {
+            mergedMap.set(k, v);
+          }
         });
 
         this.customersData = Array.from(mergedMap.values());
@@ -8628,6 +8741,7 @@ class QuotationApp {
       if (!name) return;
       const attention = (q.customer.attention || '').trim();
       const key = (name + '___' + attention).toLowerCase();
+      if (this.isCustomerDeleted(name, attention)) return;
       quoteCounts.set(key, (quoteCounts.get(key) || 0) + 1);
       if (!lastQuotes.has(key) || (q.date && q.date > (lastQuotes.get(key).date || ''))) {
         lastQuotes.set(key, q);
@@ -8636,6 +8750,7 @@ class QuotationApp {
 
     const map = new Map();
     (this.customersData || []).forEach(c => {
+      if (this.isCustomerDeleted(c.name, c.attention)) return;
       const key = (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase();
       map.set(key, { ...c });
     });
@@ -8646,6 +8761,7 @@ class QuotationApp {
       if (!name) return;
       const attention = (q.customer.attention || '').trim();
       const key = (name + '___' + attention).toLowerCase();
+      if (this.isCustomerDeleted(name, attention)) return;
 
       if (!map.has(key)) {
         map.set(key, {
@@ -9070,7 +9186,6 @@ class QuotationApp {
 
   openCustomersModal() {
     if (!this.modalCustomersDirectory) return;
-    this.harvestCustomersFromQuotes();
     this.modalCustomersDirectory.classList.add('active');
     if (this.inputSearchCustomers) {
       this.inputSearchCustomers.value = '';
@@ -9348,22 +9463,96 @@ class QuotationApp {
     const cust = (this.customersData || []).find(c => (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase() === key || c.id === key);
     if (!cust) return;
 
-    if (confirm(`"${cust.name}${cust.attention ? ' - ' + cust.attention : ''}" carisini listeden silmek istediğinize emin misiniz?`)) {
-      this.customersData = this.customersData.filter(c => (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase() !== key && c.id !== key);
+    const custName = cust.name.trim();
+    const custAttn = (cust.attention || '').trim();
+    const custNormKey = (custName + '___' + custAttn).toLowerCase();
+
+    if (confirm(`"${custName}${custAttn ? ' - ' + custAttn : ''}" carisini listeden silmek istediğinize emin misiniz?`)) {
+      // 1. Listeden çıkar
+      this.customersData = this.customersData.filter(c => (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase() !== custNormKey && c.id !== key);
       
+      // 2. Kara listeye ekle ve kalıcı olarak kaydet
+      this.deletedCustomers.add(custNormKey);
+      this.deletedCustomers.add(custName.toLowerCase());
+      this.deletedCustomers.add(custName.toLowerCase() + '___');
+
+      const delArray = Array.from(this.deletedCustomers);
+      localStorage.setItem('ortek_deleted_customers', JSON.stringify(delArray));
+      if (window.electronAPI && window.electronAPI.saveJson) {
+        window.electronAPI.saveJson({ key: 'ortek_deleted_customers', data: delArray });
+      }
+
+      // 3. Yerel depolamayı güncelle
       localStorage.setItem('ortek_customers', JSON.stringify(this.customersData));
       if (window.electronAPI && window.electronAPI.saveJson) {
         window.electronAPI.saveJson({ key: 'ortek_customers', data: this.customersData });
       }
 
+      // 4. Geçmiş tekliflerde bu cari geçiyor mu kontrol et
+      const history = this.getHistory();
+      const matchingQuotes = history.filter(q => q && q.customer && q.customer.to && q.customer.to.trim().toLowerCase() === custName.toLowerCase());
+
+      if (matchingQuotes.length > 0) {
+        // Benzer isimli veya aynı e-posta/telefonlu başka bir cari var mı? (Örn: Knet Makina -> Kent Makina)
+        const similarCust = this.customersData.find(c => {
+          if (!c || !c.name) return false;
+          if (c.name.toLowerCase() === custName.toLowerCase()) return false;
+          if (c.email && cust.email && c.email.toLowerCase() === cust.email.toLowerCase()) return true;
+          if (c.tel && cust.tel && c.tel === cust.tel) return true;
+          const n1 = this.normalizeTr(c.name);
+          const n2 = this.normalizeTr(custName);
+          if (n1.length > 3 && n2.length > 3) {
+            if (n1.slice(0, 3) === n2.slice(0, 3) && Math.abs(n1.length - n2.length) <= 2) return true;
+          }
+          return false;
+        });
+
+        if (similarCust) {
+          if (confirm(`Bu cariye ait ${matchingQuotes.length} geçmiş teklif bulundu.\n\nBu tekliflerdeki müşteri adını "${similarCust.name}" olarak birleştirip düzeltmek ister misiniz?`)) {
+            let updatedQuotesCount = 0;
+            history.forEach(q => {
+              if (q && q.customer && q.customer.to && q.customer.to.trim().toLowerCase() === custName.toLowerCase()) {
+                q.customer.to = similarCust.name;
+                if (!q.customer.taxOffice && similarCust.taxOffice) q.customer.taxOffice = similarCust.taxOffice;
+                if (!q.customer.taxNumber && similarCust.taxNumber) q.customer.taxNumber = similarCust.taxNumber;
+                updatedQuotesCount++;
+                if (typeof db !== 'undefined' && db && q.sfRef) {
+                  db.collection('quotes').doc(q.sfRef).set({ customer: q.customer }, { merge: true }).catch(() => {});
+                }
+              }
+            });
+
+            if (this.crmData && Array.isArray(this.crmData)) {
+              this.crmData.forEach(q => {
+                if (q && q.customer && q.customer.to && q.customer.to.trim().toLowerCase() === custName.toLowerCase()) {
+                  q.customer.to = similarCust.name;
+                }
+              });
+            }
+
+            localStorage.setItem('ortek_quotes_history', JSON.stringify(history.slice(0, 100)));
+            if (window.electronAPI && window.electronAPI.saveJson) {
+              window.electronAPI.saveJson({ key: 'ortek_quotes_history', data: history.slice(0, 100) });
+            }
+
+            similarCust.quoteCount = (similarCust.quoteCount || 0) + updatedQuotesCount;
+            localStorage.setItem('ortek_customers', JSON.stringify(this.customersData));
+            if (window.electronAPI && window.electronAPI.saveJson) {
+              window.electronAPI.saveJson({ key: 'ortek_customers', data: this.customersData });
+            }
+          }
+        }
+      }
+
+      // 5. Firebase Firestore'dan sil
       if (typeof db !== 'undefined' && db) {
-        const docId = cust.id || ('cust_' + this.hashString(key));
+        const docId = cust.id || ('cust_' + this.hashString(custNormKey));
         db.collection('customers').doc(docId).delete()
           .catch(err => console.warn('Customer delete error:', err));
       }
 
       this.renderCustomersTable(this.inputSearchCustomers ? this.inputSearchCustomers.value : '');
-      this.showToast('Cari kaydı silindi.', 'info');
+      this.showToast('Cari kaydı silindi ve kara listeye alındı.', 'info');
     }
   }
 }
@@ -9372,9 +9561,21 @@ class QuotationApp {
 document.addEventListener('DOMContentLoaded', async () => {
   if (window.electronAPI && window.electronAPI.loadJson) {
     try {
+      const resDel = await window.electronAPI.loadJson({ key: 'ortek_deleted_customers' });
+      if (resDel && resDel.success && Array.isArray(resDel.data) && resDel.data.length > 0) {
+        localStorage.setItem('ortek_deleted_customers', JSON.stringify(resDel.data));
+      }
       const resCust = await window.electronAPI.loadJson({ key: 'ortek_customers' });
       if (resCust && resCust.success && resCust.data && Array.isArray(resCust.data) && resCust.data.length > 0) {
-        localStorage.setItem('ortek_customers', JSON.stringify(resCust.data));
+        let custData = resCust.data;
+        if (resDel && resDel.success && Array.isArray(resDel.data)) {
+          const delSet = new Set(resDel.data.map(d => d.toLowerCase().trim()));
+          custData = custData.filter(c => {
+            const k = (c.name.trim() + '___' + (c.attention || '').trim()).toLowerCase();
+            return !delSet.has(k) && !delSet.has(c.name.trim().toLowerCase());
+          });
+        }
+        localStorage.setItem('ortek_customers', JSON.stringify(custData));
       }
       const res = await window.electronAPI.loadJson({ key: 'ortek_quotes_history' });
       if (res && res.success && res.data && Array.isArray(res.data) && res.data.length > 0) {
