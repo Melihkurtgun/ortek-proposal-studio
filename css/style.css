@@ -1149,6 +1149,107 @@ textarea.form-control {
   border: 1px solid var(--border-color);
 }
 
+/* KDV Dahil / Hariç Modern Switch Bar */
+.summary-vat-toggle-bar {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.45rem 0.6rem;
+  margin-bottom: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.summary-vat-toggle-bar:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.summary-vat-toggle-bar.active {
+  background: rgba(16, 185, 129, 0.08);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.vat-switch-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  cursor: pointer;
+  user-select: none;
+  margin: 0;
+  width: 100%;
+}
+
+.vat-switch-control {
+  position: relative;
+  display: inline-block;
+  width: 32px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.vat-switch-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.vat-switch-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: .25s ease;
+  border-radius: 20px;
+}
+
+.vat-switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 12px;
+  width: 12px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: .25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+.vat-switch-input:checked + .vat-switch-slider {
+  background-color: var(--accent-emerald, #10b981);
+}
+
+.vat-switch-input:checked + .vat-switch-slider:before {
+  transform: translateX(14px);
+}
+
+.vat-switch-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.vat-switch-title {
+  font-size: 0.80rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.vat-switch-subtitle {
+  font-size: 0.68rem;
+  color: var(--text-muted, #94a3b8);
+  transition: color 0.2s ease;
+}
+
+.summary-vat-toggle-bar.active .vat-switch-subtitle {
+  color: #34d399;
+  font-weight: 500;
+}
+
 .summary-row {
   display: flex;
   justify-content: space-between;
@@ -1683,6 +1784,33 @@ textarea.form-control {
   white-space: nowrap;
   border: 1px solid #111;
   background-color: #f1f3f5; /* Th ile aynı arkaplan rengi */
+}
+
+/* KDV Dahil 3 Kademeli Toplam Tablo Satırları */
+.grand-total-row.subtotal-row td,
+.grand-total-row.vat-row td {
+  padding: 4px 8px;
+}
+
+.grand-total-row.subtotal-row .grand-total-label,
+.grand-total-row.vat-row .grand-total-label {
+  font-weight: 600;
+  font-size: 9pt;
+  background-color: #fcfcfc;
+}
+
+.grand-total-row.subtotal-row .grand-total-amount,
+.grand-total-row.vat-row .grand-total-amount {
+  font-weight: 600;
+  font-size: 9pt;
+  background-color: #fcfcfc;
+}
+
+.grand-total-row.total-vat-included-row .grand-total-label,
+.grand-total-row.total-vat-included-row .grand-total-amount {
+  background-color: #e9ecef;
+  font-weight: 800;
+  font-size: 10pt;
 }
 
 /* Remarks & Conditions Block */

@@ -483,6 +483,20 @@
 
           <!-- Hızlı Hesaplama Özeti -->
           <div class="summary-box">
+            <!-- Teklifte KDV Dahil Göster Seçeneği -->
+            <div class="summary-vat-toggle-bar">
+              <label class="vat-switch-label" for="check-vat-included" title="Teklif belgesinde ara toplam, %20 KDV ve KDV Dahil Genel Toplam satırlarını gösterir">
+                <span class="vat-switch-control">
+                  <input type="checkbox" id="check-vat-included" class="vat-switch-input">
+                  <span class="vat-switch-slider"></span>
+                </span>
+                <span class="vat-switch-text">
+                  <span class="vat-switch-title">Teklifte KDV Dahil Göster</span>
+                  <span class="vat-switch-subtitle" id="vat-switch-status-text">KDV Hariç (Varsayılan)</span>
+                </span>
+              </label>
+            </div>
+
             <div class="summary-row">
               <span>Ara Toplam:</span>
               <span id="summary-subtotal">0,00 EUR</span>

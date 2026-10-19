@@ -4,6 +4,20 @@ const path = require('path');
 const fs = require('fs');
 const https = require('https');
 
+// Tekil Pencere Kilidi (Programın birden fazla kez açılmasını kesin olarak engeller)
+const gotTheLock = app.requestSingleInstanceLock();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // İkinci bir kopya açılmak istendiğinde mevcut pencereyi öne getir ve odakla
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+    }
+  });
+}
+
 // Kullanıcı verileri ve oturum ayarlarının her zaman korunması için userData yolunu sabitliyoruz
 const primaryUserData = path.join(app.getPath('appData'), 'ortek-proposal-studio');
 const secondaryUserData = path.join(app.getPath('appData'), 'Teklif Programı');

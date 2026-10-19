@@ -332,7 +332,8 @@ class QuotationApp {
       isPackagePrice: false,
       packagePrice: '',
       packageRowText: 'Proje Özel Fiyat',
-      packageTotalText: 'Proje Özel Fiyat'
+      packageTotalText: 'Proje Özel Fiyat',
+      isVatIncludedInTotal: false
     };
   }
 
@@ -485,6 +486,9 @@ class QuotationApp {
     this.summarySubtotal = document.getElementById('summary-subtotal');
     this.summaryVat = document.getElementById('summary-vat');
     this.summaryGrandtotal = document.getElementById('summary-grandtotal');
+    this.checkVatIncluded = document.getElementById('check-vat-included');
+    this.vatSwitchStatusText = document.getElementById('vat-switch-status-text');
+    this.summaryVatToggleBar = document.querySelector('.summary-vat-toggle-bar');
 
     // 5. Kart: Şartlar ve Koşullar (Remarks)
     this.inputRemarkDeliveryPlace = document.getElementById('input-remark-delivery-place');
@@ -1588,6 +1592,13 @@ class QuotationApp {
       this.setupBackdropClose(this.modalExpiryReminders, () => this.closeExpiryRemindersModal());
     }
 
+    // KDV Dahil / Hariç Gösterim Tercihi Toggle
+    if (this.checkVatIncluded) {
+      this.checkVatIncluded.addEventListener('change', (e) => {
+        this.setVatIncludedMode(e.target.checked);
+      });
+    }
+
     // Kur Hesaplayıcı ve Döviz Çevirici Olayları (TCMB & Akbank)
     if (this.btnOpenCurrencyCalc) {
       this.btnOpenCurrencyCalc.addEventListener('click', () => this.openCurrencyCalcModal());
@@ -2308,13 +2319,20 @@ class QuotationApp {
     const scopeVal = (this.inputRemarkScope && this.inputRemarkScope.value.trim()) ? this.inputRemarkScope.value.trim() : (rc.scopeText || '');
 
     const useAkbank = !!(rc && rc.useAkbankRate);
+    const isVatInc = !!this.state.isVatIncludedInTotal;
 
     if (isEn) {
-      let currText = `Currency: Our prices are in Euro and 20% VAT will be added to the unit prices.`;
+      let currText = isVatInc
+        ? `Currency: Our prices are in Euro and include 20% VAT calculated on the total amount.`
+        : `Currency: Our prices are in Euro and 20% VAT will be added to the unit prices.`;
       if (c === 'USD') {
-        currText = `Currency: Our prices are in USD and 20% VAT will be added to the unit prices.`;
+        currText = isVatInc
+          ? `Currency: Our prices are in USD and include 20% VAT calculated on the total amount.`
+          : `Currency: Our prices are in USD and 20% VAT will be added to the unit prices.`;
       } else if (c === 'TL') {
-        currText = `Currency: Our prices are in Turkish Lira and 20% VAT will be added to the unit prices.`;
+        currText = isVatInc
+          ? `Currency: Our prices are in Turkish Lira and include 20% VAT calculated on the total amount.`
+          : `Currency: Our prices are in Turkish Lira and 20% VAT will be added to the unit prices.`;
       }
 
       const delPlace = placeVal ? this.translateText(placeVal) : 'Ex-Warehouse';
@@ -2344,11 +2362,17 @@ class QuotationApp {
         `Order Cancellation: In case of order cancellation, the advance payment will not be refunded.`
       ];
     } else {
-      let paraBirimiText = `Para Birimi: Fiyatlarımız Euro olup birim fiyatlara %20 KDV ilave edilecektir.`;
+      let paraBirimiText = isVatInc
+        ? `Para Birimi: Fiyatlarımız Euro olup genel toplama %20 KDV dahil edilerek hesaplanmıştır.`
+        : `Para Birimi: Fiyatlarımız Euro olup birim fiyatlara %20 KDV ilave edilecektir.`;
       if (c === 'USD') {
-        paraBirimiText = `Para Birimi: Fiyatlarımız USD olup birim fiyatlara %20 KDV ilave edilecektir.`;
+        paraBirimiText = isVatInc
+          ? `Para Birimi: Fiyatlarımız USD olup genel toplama %20 KDV dahil edilerek hesaplanmıştır.`
+          : `Para Birimi: Fiyatlarımız USD olup birim fiyatlara %20 KDV ilave edilecektir.`;
       } else if (c === 'TL') {
-        paraBirimiText = `Para Birimi: Fiyatlarımız Türk Lirası olup birim fiyatlara %20 KDV ilave edilecektir.`;
+        paraBirimiText = isVatInc
+          ? `Para Birimi: Fiyatlarımız Türk Lirası olup genel toplama %20 KDV dahil edilerek hesaplanmıştır.`
+          : `Para Birimi: Fiyatlarımız Türk Lirası olup birim fiyatlara %20 KDV ilave edilecektir.`;
       }
 
       const deliveryPlace = placeVal ? placeVal : 'Depo Teslim';
@@ -2478,6 +2502,12 @@ class QuotationApp {
     if (this.inputPackagePrice) this.inputPackagePrice.value = '';
     if (this.inputPackageRowText) this.inputPackageRowText.value = 'Proje Özel Fiyat';
     if (this.inputPackageTotalText) this.inputPackageTotalText.value = 'Proje Özel Fiyat';
+
+    // KDV Dahil durumunu sıfırla (Her zaman KDV Hariç başlar)
+    this.state.isVatIncludedInTotal = false;
+    if (this.checkVatIncluded) this.checkVatIncluded.checked = false;
+    if (this.summaryVatToggleBar) this.summaryVatToggleBar.classList.remove('active');
+    if (this.vatSwitchStatusText) this.vatSwitchStatusText.textContent = 'KDV Hariç (Varsayılan)';
 
     // Kalemleri temiz sıfırla
     this.state.items = JSON.parse(JSON.stringify(DEFAULT_ITEMS));
@@ -2794,6 +2824,20 @@ class QuotationApp {
     if (this.modalCurrencyCalc) {
       this.modalCurrencyCalc.classList.remove('active');
     }
+  }
+
+  setVatIncludedMode(isIncluded) {
+    this.state.isVatIncludedInTotal = !!isIncluded;
+    if (this.checkVatIncluded) {
+      this.checkVatIncluded.checked = this.state.isVatIncludedInTotal;
+    }
+    if (this.summaryVatToggleBar) {
+      this.summaryVatToggleBar.classList.toggle('active', this.state.isVatIncludedInTotal);
+    }
+    if (this.vatSwitchStatusText) {
+      this.vatSwitchStatusText.textContent = this.state.isVatIncludedInTotal ? 'KDV Dahil Aktif' : 'KDV Hariç (Varsayılan)';
+    }
+    this.render();
   }
 
   setCalcSourceCurrency(curr) {
@@ -5634,6 +5678,16 @@ class QuotationApp {
     // Sol panelde müşteri sorarsa hızlıca bakabilmek için KDV Dahil toplam doğru hesaplanıp gösterilir:
     this.summaryGrandtotal.textContent = this.formatCurrency(grandTotalWithVat);
 
+    if (this.checkVatIncluded) {
+      this.checkVatIncluded.checked = !!this.state.isVatIncludedInTotal;
+    }
+    if (this.summaryVatToggleBar) {
+      this.summaryVatToggleBar.classList.toggle('active', !!this.state.isVatIncludedInTotal);
+    }
+    if (this.vatSwitchStatusText) {
+      this.vatSwitchStatusText.textContent = this.state.isVatIncludedInTotal ? 'KDV Dahil Aktif' : 'KDV Hariç (Varsayılan)';
+    }
+
     // Paket / Proje Özel Fiyat kutucuğundaki canlı önizleme ve rozet
     if (this.packageLivePill) {
       if (this.state.isPackagePrice && subtotal > 0) {
@@ -5801,7 +5855,7 @@ class QuotationApp {
     // Sayfa altından tam olarak boşluk kalana kadar sayfayı tam doldurma sınırı (px):
     const PAGE_LIMIT = 830;
     const REMARKS_SPACE = 250;
-    const GT_SPACE = 28;
+    const GT_SPACE = this.state.isVatIncludedInTotal ? 76 : 28;
 
     const pages = [];
     let remainingItems = [...items];
@@ -6029,7 +6083,7 @@ class QuotationApp {
         : `SAYFA 1 / ${totalPages} &mdash; TEKLİF ÖN YAZISI`;
     }
 
-    const { grandTotal } = this.calculateTotals();
+    const { subtotal, vat, grandTotal, grandTotalWithVat } = this.calculateTotals();
     const currencyLabel = this.state.currency || 'EUR';
     let currentGlobalIndex = 0;
 
@@ -6056,17 +6110,45 @@ class QuotationApp {
 
       // Grand Total satırı bu sayfada ise ekle
       if (pageCfg.hasGrandTotal && grandTotal > 0) {
-        let gtLabel = isEn ? 'Grand Total' : 'Toplam Tutar';
-        if (this.state.isPackagePrice) {
-          gtLabel = this.escapeHtml(this.state.packageTotalText || 'Proje Özel Fiyat');
+        if (this.state.isVatIncludedInTotal) {
+          // KDV Dahil mod: 3 Kademeli Toplam Tablosu (Ara Toplam, KDV %20, Toplam Tutar KDV Dahil)
+          const subtotalLabel = this.state.isPackagePrice
+            ? (isEn ? 'Package Subtotal' : 'Proje Özel Fiyat (Ara Toplam)')
+            : (isEn ? 'Subtotal' : 'Ara Toplam');
+          const vatLabel = isEn ? 'VAT (%20)' : 'KDV (%20)';
+          const grandTotalLabel = isEn ? 'Grand Total (incl. VAT)' : 'Toplam Tutar (KDV Dahil)';
+
+          rowsHtml += `
+            <tr class="grand-total-row subtotal-row">
+              <td colspan="3" class="grand-total-empty" style="border: none !important; background: transparent !important;"></td>
+              <td class="grand-total-label">${subtotalLabel}</td>
+              <td class="grand-total-amount">${this.formatCurrency(subtotal)}</td>
+            </tr>
+            <tr class="grand-total-row vat-row">
+              <td colspan="3" class="grand-total-empty" style="border: none !important; background: transparent !important;"></td>
+              <td class="grand-total-label">${vatLabel}</td>
+              <td class="grand-total-amount">${this.formatCurrency(vat)}</td>
+            </tr>
+            <tr class="grand-total-row total-vat-included-row">
+              <td colspan="3" class="grand-total-empty" style="border: none !important; background: transparent !important;"></td>
+              <td class="grand-total-label">${grandTotalLabel}</td>
+              <td class="grand-total-amount">${this.formatCurrency(grandTotalWithVat)}</td>
+            </tr>
+          `;
+        } else {
+          // Standart KDV Hariç mod (Varsayılan)
+          let gtLabel = isEn ? 'Grand Total' : 'Toplam Tutar';
+          if (this.state.isPackagePrice) {
+            gtLabel = this.escapeHtml(this.state.packageTotalText || 'Proje Özel Fiyat');
+          }
+          rowsHtml += `
+            <tr class="grand-total-row">
+              <td colspan="3" class="grand-total-empty" style="border: none !important; background: transparent !important;"></td>
+              <td class="grand-total-label">${gtLabel}</td>
+              <td class="grand-total-amount">${this.formatCurrency(grandTotal)}</td>
+            </tr>
+          `;
         }
-        rowsHtml += `
-          <tr class="grand-total-row">
-            <td colspan="3" class="grand-total-empty" style="border: none !important; background: transparent !important;"></td>
-            <td class="grand-total-label">${gtLabel}</td>
-            <td class="grand-total-amount">${this.formatCurrency(grandTotal)}</td>
-          </tr>
-        `;
       }
 
       let tableSectionHtml = '';
@@ -6818,6 +6900,7 @@ class QuotationApp {
       packagePrice: this.state.packagePrice || '',
       packageRowText: this.state.packageRowText || 'Proje Özel Fiyat',
       packageTotalText: this.state.packageTotalText || 'Proje Özel Fiyat',
+      isVatIncludedInTotal: !!this.state.isVatIncludedInTotal,
       savedAt: new Date().toLocaleString('tr-TR'),
       // CRM / Takip Alanları
       preparedBy: this.state.profile.preparedBy || 'Bilinmiyor',
@@ -8876,6 +8959,16 @@ class QuotationApp {
     this.state.packagePrice = quote.packagePrice || '';
     this.state.packageRowText = quote.packageRowText || 'Proje Özel Fiyat';
     this.state.packageTotalText = quote.packageTotalText || 'Proje Özel Fiyat';
+    this.state.isVatIncludedInTotal = !!quote.isVatIncludedInTotal;
+    if (this.checkVatIncluded) {
+      this.checkVatIncluded.checked = this.state.isVatIncludedInTotal;
+    }
+    if (this.summaryVatToggleBar) {
+      this.summaryVatToggleBar.classList.toggle('active', this.state.isVatIncludedInTotal);
+    }
+    if (this.vatSwitchStatusText) {
+      this.vatSwitchStatusText.textContent = this.state.isVatIncludedInTotal ? 'KDV Dahil Aktif' : 'KDV Hariç (Varsayılan)';
+    }
     this.state.items.forEach(item => {
       if (item.unitType && item.unitType !== 'Adet' && item.unitType !== 'Metre') {
         item.unitType = item.isMeter ? 'Metre' : 'Adet';
