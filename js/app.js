@@ -6111,12 +6111,19 @@ class QuotationApp {
       // Grand Total satırı bu sayfada ise ekle
       if (pageCfg.hasGrandTotal && grandTotal > 0) {
         if (this.state.isVatIncludedInTotal) {
-          // KDV Dahil mod: 3 Kademeli Toplam Tablosu (Ara Toplam, KDV %20, Toplam Tutar KDV Dahil)
           const subtotalLabel = this.state.isPackagePrice
-            ? (isEn ? 'Package Subtotal' : 'Proje Özel Fiyat (Ara Toplam)')
+            ? (isEn ? 'Package Subtotal' : 'Proje Özel Fiyat<span class="grand-total-subnote">(Ara Toplam)</span>')
             : (isEn ? 'Subtotal' : 'Ara Toplam');
           const vatLabel = isEn ? 'VAT (%20)' : 'KDV (%20)';
-          const grandTotalLabel = isEn ? 'Grand Total (incl. VAT)' : 'Toplam Tutar (KDV Dahil)';
+          let grandTotalLabel = isEn
+            ? `Grand Total<span class="grand-total-subnote">(incl. VAT)</span>`
+            : `Toplam Tutar<span class="grand-total-subnote">(KDV Dahil)</span>`;
+          if (this.state.isPackagePrice) {
+            const pkgTitle = this.escapeHtml(this.state.packageTotalText || 'Proje Özel Fiyat');
+            grandTotalLabel = isEn
+              ? `${pkgTitle}<span class="grand-total-subnote">(incl. VAT)</span>`
+              : `${pkgTitle}<span class="grand-total-subnote">(KDV Dahil)</span>`;
+          }
 
           rowsHtml += `
             <tr class="grand-total-row subtotal-row">

@@ -1666,6 +1666,7 @@ textarea.form-control {
   width: 100%;
   border-collapse: collapse;
   font-size: 9pt;
+  table-layout: fixed;
 }
 
 .quotation-table th,
@@ -1771,7 +1772,6 @@ textarea.form-control {
   font-weight: 700;
   font-size: 10pt;
   color: #111;
-  white-space: nowrap;
   border: 1px solid #111;
   background-color: #f1f3f5; /* Th ile aynı arkaplan rengi */
 }
@@ -1806,11 +1806,34 @@ textarea.form-control {
   background-color: #fcfcfc;
 }
 
-.grand-total-row.total-vat-included-row .grand-total-label,
+.grand-total-row.total-vat-included-row td {
+  padding: 4px 8px;
+  vertical-align: middle;
+}
+
+.grand-total-row.total-vat-included-row .grand-total-label {
+  background-color: #e9ecef;
+  font-weight: 800;
+  font-size: 9.6pt;
+  line-height: 1.15;
+  text-align: right;
+}
+
 .grand-total-row.total-vat-included-row .grand-total-amount {
   background-color: #e9ecef;
   font-weight: 800;
   font-size: 10pt;
+  vertical-align: middle;
+}
+
+.grand-total-subnote {
+  display: block;
+  font-size: 7.2pt;
+  font-weight: 600;
+  color: #495057;
+  letter-spacing: 0.1px;
+  margin-top: 1px;
+  line-height: 1;
 }
 
 /* Remarks & Conditions Block */
