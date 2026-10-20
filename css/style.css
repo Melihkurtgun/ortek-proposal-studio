@@ -1687,8 +1687,8 @@ textarea.form-control {
 }
 
 .quotation-table th.col-no { width: 5%; }
-.quotation-table th.col-desc { width: 50%; }
-.quotation-table th.col-qty { width: 10%; }
+.quotation-table th.col-desc { width: 48%; }
+.quotation-table th.col-qty { width: 12%; }
 .quotation-table th.col-price { width: 17.5%; }
 .quotation-table th.col-total { width: 17.5%; }
 
@@ -1739,6 +1739,17 @@ textarea.form-control {
 .quotation-table td.col-qty {
   text-align: center;
   font-weight: 700;
+  padding: 6px 3px;
+  line-height: 1.25;
+  white-space: normal;
+  word-break: normal;
+}
+
+.quotation-table td.col-qty .qty-unit {
+  display: inline-block;
+  font-weight: 600;
+  font-size: 8.5pt;
+  color: #222;
   white-space: nowrap;
 }
 

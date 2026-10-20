@@ -5999,7 +5999,7 @@ class QuotationApp {
 
     if (this.state.isPackagePrice) {
       const rowPriceText = this.escapeHtml(this.state.packageRowText || 'Proje Özel Fiyat');
-      const qtyStr = (q > 0) ? `${q} ${this.escapeHtml(unitLabel)}` : '';
+      const qtyStr = (q > 0) ? `${q} <span class="qty-unit">${this.escapeHtml(unitLabel)}</span>` : '';
 
       return `
         <tr>
@@ -6015,7 +6015,7 @@ class QuotationApp {
     if (item.isPriceIncluded) {
       const defaultNote = isEn ? '*Included in price.' : '*Fiyata dahildir.';
       const includedNote = this.escapeHtml(item.priceIncludedText || defaultNote);
-      const qtyStr = (q > 0) ? `${q} ${this.escapeHtml(unitLabel)}` : '';
+      const qtyStr = (q > 0) ? `${q} <span class="qty-unit">${this.escapeHtml(unitLabel)}</span>` : '';
 
       return `
         <tr>
@@ -6035,7 +6035,7 @@ class QuotationApp {
       <tr>
         <td class="col-no">${index + 1}</td>
         <td class="col-desc">${descHtml}</td>
-        <td class="col-qty">${q > 0 ? (q + ' ' + this.escapeHtml(unitLabel)) : ''}</td>
+        <td class="col-qty">${q > 0 ? `${q} <span class="qty-unit">${this.escapeHtml(unitLabel)}</span>` : ''}</td>
         <td class="col-price">${p > 0 ? this.formatCurrency(p) : ''}</td>
         <td class="col-total">${rowTotal > 0 ? this.formatCurrency(rowTotal) : ''}</td>
       </tr>
