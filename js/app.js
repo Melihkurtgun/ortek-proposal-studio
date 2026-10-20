@@ -6227,14 +6227,7 @@ class QuotationApp {
         <!-- Üst Başlık: Sol Büyütülmüş Logo & Sağ Bilgi Bloğu -->
         <div class="page2-header">
           <div class="page2-logo-box">
-            ${meta.isPhs ? `
-              <div class="phs-logo-wrapper page2-phs-wrapper">
-                <img src="assets/PHS Logo.png" alt="PHS Logo" class="phs-main-logo">
-                <img src="assets/pompa-merkezi-logo.png" alt="Pompa Merkezi Logo" class="phs-sub-logo">
-              </div>
-            ` : `
-              <img src="${meta.logoSrc}" alt="Logo">
-            `}
+            <img src="${meta.logoSrc}" alt="Logo">
           </div>
           <div class="page2-header-meta">
             <div class="page2-meta-row">

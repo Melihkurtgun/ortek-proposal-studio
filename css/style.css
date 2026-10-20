@@ -1608,25 +1608,7 @@ textarea.form-control {
   object-position: left top;
 }
 
-/* Sayfa 2 PHS + Pompa Merkezi Düzeni */
-.page2-phs-wrapper {
-  align-items: flex-start;
-  justify-content: center;
-}
 
-.page2-phs-wrapper .phs-main-logo {
-  height: 44px;
-  max-width: 150px;
-  object-position: left center;
-}
-
-.page2-phs-wrapper .phs-sub-logo {
-  height: 16px;
-  max-width: 125px;
-  margin-top: 8px;
-  margin-bottom: 4px;
-  object-position: left center;
-}
 
 .page2-header-meta {
   text-align: left;

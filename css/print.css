@@ -181,24 +181,7 @@
     margin-top: -25px !important;
   }
 
-  .page2-phs-wrapper {
-    align-items: flex-start !important;
-    justify-content: center !important;
-  }
 
-  .page2-phs-wrapper .phs-main-logo {
-    height: 44px !important;
-    max-width: 150px !important;
-    object-position: left center !important;
-  }
-
-  .page2-phs-wrapper .phs-sub-logo {
-    height: 16px !important;
-    max-width: 125px !important;
-    margin-top: 8px !important;
-    margin-bottom: 4px !important;
-    object-position: left center !important;
-  }
 
   /* Tipografi & Renk Koruması */
   .subject-label {
