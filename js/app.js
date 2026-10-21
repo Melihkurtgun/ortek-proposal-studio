@@ -5832,19 +5832,34 @@ class QuotationApp {
   }
 
   estimateItemHeight(item) {
-    let lines = 1;
-    if (item.title) lines++;
-    if (item.marka) lines++;
-    if (item.model) lines++;
-    if (item.calismaAraligi) lines++;
-    if (item.guc) lines++;
-    if (item.cikis) lines++;
-    if (item.extraDetails) lines += Math.ceil(item.extraDetails.length / 45);
-    if (item.isPriceIncluded) lines++;
-    if (item.customSpecs && item.customSpecs.length > 0) {
-      item.customSpecs.forEach(s => { if (s.label || s.value) lines++; });
+    if (!item) return 24;
+    let specLines = 0;
+    const hasTitle = !!(item.title && item.title.trim());
+    if (item.marka && item.marka.trim()) specLines++;
+    if (item.model && item.model.trim()) specLines++;
+    if (item.calismaAraligi && item.calismaAraligi.trim()) specLines++;
+    if (item.guc && item.guc.trim()) specLines++;
+    if (item.cikis && item.cikis.trim()) specLines++;
+    if (item.extraDetails && item.extraDetails.trim()) {
+      specLines += Math.max(1, Math.ceil(item.extraDetails.trim().length / 48));
     }
-    return 10 + (lines * 17);
+    if (item.customSpecs && item.customSpecs.length > 0) {
+      item.customSpecs.forEach(s => {
+        const textLen = ((s.label || '') + (s.value || '')).trim().length;
+        if (textLen > 0) {
+          specLines += Math.max(1, Math.ceil(textLen / 48));
+        }
+      });
+    }
+    if (item.isPriceIncluded) specLines++;
+
+    let h = 10; // cell padding (4.5px * 2) + 1px border
+    if (hasTitle) {
+      const titleLines = Math.max(1, Math.ceil(item.title.trim().length / 42));
+      h += titleLines * 18;
+    }
+    h += specLines * 16.5;
+    return Math.max(24, Math.round(h));
   }
 
   paginateQuote(items) {
@@ -5852,15 +5867,15 @@ class QuotationApp {
       return [{ items: [], hasGrandTotal: false, hasRemarks: true }];
     }
 
-    // Remarks listesinin gerçek madde sayısına göre dinamik alan hesabı
+    // Remarks listesinin gerçek madde sayısına göre hassas alan hesabı
     const remarksList = this.customRemarksList ? this.customRemarksList : this.generateRemarksArray();
     const remarksCount = (remarksList && remarksList.length > 0) ? remarksList.length : 14;
-    // Başlık + maddeler (satır sarma + boşluklar) + imza bloğu payı
-    const REMARKS_SPACE = Math.max(290, 95 + (remarksCount * 15));
+    // Remarks başlığı, liste satırları, aralıklar ve imza bloğu toplam yüksekliği
+    const REMARKS_SPACE = Math.round(58 + (remarksCount * 20));
 
-    // Sayfa altından tam olarak boşluk kalana kadar sayfayı tam doldurma sınırı (px):
-    const PAGE_LIMIT = 810;
-    const GT_SPACE = this.state.isVatIncludedInTotal ? 84 : 32;
+    // Sayfa alt sınırına (Melih Kurtgün imzasının altından tam 1 satır pay kalana kadar) doldurma sınırı:
+    const PAGE_LIMIT = 840;
+    const GT_SPACE = this.state.isVatIncludedInTotal ? 81 : 27;
 
     const pages = [];
     let remainingItems = [...items];
