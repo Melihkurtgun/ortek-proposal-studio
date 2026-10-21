@@ -5844,7 +5844,7 @@ class QuotationApp {
     if (item.customSpecs && item.customSpecs.length > 0) {
       item.customSpecs.forEach(s => { if (s.label || s.value) lines++; });
     }
-    return 8 + (lines * 16);
+    return 10 + (lines * 17);
   }
 
   paginateQuote(items) {
@@ -5852,10 +5852,15 @@ class QuotationApp {
       return [{ items: [], hasGrandTotal: false, hasRemarks: true }];
     }
 
+    // Remarks listesinin gerçek madde sayısına göre dinamik alan hesabı
+    const remarksList = this.customRemarksList ? this.customRemarksList : this.generateRemarksArray();
+    const remarksCount = (remarksList && remarksList.length > 0) ? remarksList.length : 14;
+    // Başlık + maddeler (satır sarma + boşluklar) + imza bloğu payı
+    const REMARKS_SPACE = Math.max(290, 95 + (remarksCount * 15));
+
     // Sayfa altından tam olarak boşluk kalana kadar sayfayı tam doldurma sınırı (px):
-    const PAGE_LIMIT = 830;
-    const REMARKS_SPACE = 250;
-    const GT_SPACE = this.state.isVatIncludedInTotal ? 76 : 28;
+    const PAGE_LIMIT = 810;
+    const GT_SPACE = this.state.isVatIncludedInTotal ? 84 : 32;
 
     const pages = [];
     let remainingItems = [...items];
@@ -5899,7 +5904,7 @@ class QuotationApp {
         // Daha eklenecek başka kalemler de varsa:
         else {
           if (currentHeight + nextH > PAGE_LIMIT) {
-            break; // Sayfa 4 satır sınırına kadar doldu, sonraki sayfaya geç
+            break; // Sayfa sınırına kadar doldu, sonraki sayfaya geç
           }
           currentItems.push(remainingItems.shift());
           currentHeight += nextH;
@@ -6192,16 +6197,24 @@ class QuotationApp {
             </table>
           </div>
         `;
+      } else if (pageCfg.hasRemarks) {
+        // Yalnızca Şartlar ve Koşullar içeren devam sayfası
+        const standaloneTitle = isEn ? 'Terms & Conditions' : 'Şartlar ve Koşullar';
+        tableSectionHtml = `
+          <!-- Başlık: Şartlar ve Koşullar -->
+          <div class="doc-title-quotation">${standaloneTitle}</div>
+        `;
       }
 
       let remarksAndSignoffHtml = '';
       if (pageCfg.hasRemarks) {
+        const isStandalone = (pageCfg.items.length === 0);
         const remarksHead = isEn ? 'Remarks : Terms and conditions:' : 'Remarks : Şartlar ve koşullar:';
         const closingText = isEn ? 'Saygılarımızla / Best Regards' : 'Saygılarımızla / Best Regards';
 
         remarksAndSignoffHtml = `
           <!-- Şartlar ve Koşullar (Remarks) -->
-          <div class="remarks-section" style="${pageCfg.items.length === 0 ? 'margin-top: 1.5rem;' : ''}">
+          <div class="remarks-section ${isStandalone ? 'standalone-remarks' : ''}">
             <div class="remarks-header">${remarksHead}</div>
             <ul class="remarks-list">
               ${this.renderRemarksHtml()}
@@ -6209,7 +6222,7 @@ class QuotationApp {
           </div>
 
           <!-- Sayfa Alt Kapanış Bloğu -->
-          <div class="page2-signoff" style="page-break-inside: avoid !important; break-inside: avoid !important; display: block !important;">
+          <div class="page2-signoff ${isStandalone ? 'standalone-signoff' : ''}" style="page-break-inside: avoid !important; break-inside: avoid !important; display: block !important;">
             <div class="closing-text" style="page-break-inside: avoid !important; break-inside: avoid !important;">${closingText}</div>
             <div class="company-title" style="page-break-inside: avoid !important; break-inside: avoid !important;">${meta.longName}</div>
             <div class="person-role" style="page-break-inside: avoid !important; break-inside: avoid !important;">${meta.preparedBy} - ${meta.signerRole}</div>
@@ -6227,7 +6240,14 @@ class QuotationApp {
         <!-- Üst Başlık: Sol Büyütülmüş Logo & Sağ Bilgi Bloğu -->
         <div class="page2-header">
           <div class="page2-logo-box">
-            <img src="${meta.logoSrc}" alt="Logo">
+            ${meta.isPhs ? `
+              <div class="phs-logo-wrapper page2-phs-wrapper">
+                <img src="assets/PHS Logo.png" alt="PHS Logo" class="phs-main-logo">
+                <img src="assets/pompa-merkezi-logo.png" alt="Pompa Merkezi Logo" class="phs-sub-logo">
+              </div>
+            ` : `
+              <img src="${meta.logoSrc}" alt="Logo" class="ortek-main-logo">
+            `}
           </div>
           <div class="page2-header-meta">
             <div class="page2-meta-row">
